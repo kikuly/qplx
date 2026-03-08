@@ -385,21 +385,30 @@ select.input{cursor:pointer}
           <div class="sec-header"><div class="sec-title">🎯 Thực hành thi</div></div>
           <div class="box">
             <div class="box-title">Cấu hình bộ đề</div>
+			<div id="exam-breakdown" style="margin-bottom:12px"></div>
             <div class="grid2" style="margin-bottom:14px">
               <div>
                 <div style="font-size:12px;color:var(--tx2);margin-bottom:6px">Loại bộ đề</div>
-                <select class="input" id="exam-type">
-                  <option value="random">🎲 Ngẫu nhiên 50 câu</option>
-				  <option value="diemliet">🔴 Chỉ câu điểm liệt (60 câu)</option>
-                  <option value="ch1">Chương I — Quy định chung (180 câu)</option>
-                  <option value="ch2">Chương II — Văn hóa GT (25 câu)</option>
-                  <option value="ch3">Chương III — Kỹ thuật lái (58 câu)</option>
-                  <option value="ch4">Chương IV — Cấu tạo (37 câu)</option>
-                  <option value="ch5">Chương V — Biển báo (185 câu)</option>
-                  <option value="ch6">Chương VI — Sa hình (114 câu)</option>
-                  <option value="full">📋 Toàn bộ 600 câu</option>
-                  <option value="custom">✏️ Tùy chỉnh số câu</option>
-                </select>
+                <select class="input" id="exam-type" onchange="onExamTypeChange()">
+				  <optgroup label="── Đề chuẩn theo hạng ──">
+					<option value="hang-b">🚗 Hạng B — 30 câu / 22 phút</option>
+					<option value="hang-c1">🚛 Hạng C1 — 35 câu / 26 phút</option>
+					<option value="hang-c">🚚 Hạng C — 40 câu / 30 phút</option>
+					<option value="hang-d">🚌 Hạng D1/D2/D/BE/CE/... — 45 câu / 38 phút</option>
+				  </optgroup>
+				  <optgroup label="── Tùy chỉnh ──">
+					<option value="random">🎲 Ngẫu nhiên (tùy chỉnh số câu)</option>
+					<option value="ch1">Chương I — Quy định chung (180 câu)</option>
+					<option value="ch2">Chương II — Văn hóa GT (25 câu)</option>
+					<option value="ch3">Chương III — Kỹ thuật lái (58 câu)</option>
+					<option value="ch4">Chương IV — Cấu tạo (37 câu)</option>
+					<option value="ch5">Chương V — Biển báo (185 câu)</option>
+					<option value="ch6">Chương VI — Sa hình (115 câu)</option>
+					<option value="diemliet">🔴 Chỉ câu điểm liệt (60 câu)</option>
+					<option value="full">📋 Toàn bộ 599 câu</option>
+					<option value="custom">✏️ Tự nhập số câu</option>
+				  </optgroup>
+				</select>
               </div>
               <div>
                 <div style="font-size:12px;color:var(--tx2);margin-bottom:6px">Số câu thi</div>
@@ -672,6 +681,62 @@ const DIEM_LIET_IDS = new Set([
   97,98,102,117,163,165,167,197,198,206,215,226,234,245,246,252,
   253,254,255,260
 ]);
+// Cấu hình đề theo từng hạng GPLX
+// ch1_normal = Ch.I trừ điểm liệt, diem_liet = câu điểm liệt (Ch.I)
+const EXAM_CONFIGS = {
+  'hang-b': {
+    label: 'Hạng B (30 câu · 22 phút)',
+    total: 30, time: 22,
+    slots: [
+      { name: 'Quy định chung',      n: 8,  src: 'ch1_normal' },
+      { name: 'Điểm liệt',           n: 1,  src: 'diem_liet'  },
+      { name: 'Văn hóa GT & PCCC',   n: 1,  src: 'ch2'        },
+      { name: 'Kỹ thuật lái',        n: 1,  src: 'ch3'        },
+      { name: 'Cấu tạo & sửa chữa', n: 1,  src: 'ch4'        },
+      { name: 'Báo hiệu đường bộ',   n: 9,  src: 'ch5'        },
+      { name: 'Sa hình & tình huống',n: 9,  src: 'ch6'        },
+    ]
+  },
+  'hang-c1': {
+    label: 'Hạng C1 (35 câu · 26 phút)',
+    total: 35, time: 26,
+    slots: [
+      { name: 'Quy định chung',      n: 10, src: 'ch1_normal' },
+      { name: 'Điểm liệt',           n: 1,  src: 'diem_liet'  },
+      { name: 'Văn hóa GT & PCCC',   n: 1,  src: 'ch2'        },
+      { name: 'Kỹ thuật lái',        n: 2,  src: 'ch3'        },
+      { name: 'Cấu tạo & sửa chữa', n: 1,  src: 'ch4'        },
+      { name: 'Báo hiệu đường bộ',   n: 10, src: 'ch5'        },
+      { name: 'Sa hình & tình huống',n: 10, src: 'ch6'        },
+    ]
+  },
+  'hang-c': {
+    label: 'Hạng C (40 câu · 30 phút)',
+    total: 40, time: 30,
+    slots: [
+      { name: 'Quy định chung',      n: 10, src: 'ch1_normal' },
+      { name: 'Điểm liệt',           n: 1,  src: 'diem_liet'  },
+      { name: 'Văn hóa GT & PCCC',   n: 1,  src: 'ch2'        },
+      { name: 'Kỹ thuật lái',        n: 2,  src: 'ch3'        },
+      { name: 'Cấu tạo & sửa chữa', n: 1,  src: 'ch4'        },
+      { name: 'Báo hiệu đường bộ',   n: 14, src: 'ch5'        },
+      { name: 'Sa hình & tình huống',n: 11, src: 'ch6'        },
+    ]
+  },
+  'hang-d': {
+    label: 'Hạng D1/D2/D/BE/C1E/CE/... (45 câu · 38 phút)',
+    total: 45, time: 38,
+    slots: [
+      { name: 'Quy định chung',      n: 10, src: 'ch1_normal' },
+      { name: 'Điểm liệt',           n: 1,  src: 'diem_liet'  },
+      { name: 'Văn hóa GT & PCCC',   n: 1,  src: 'ch2'        },
+      { name: 'Kỹ thuật lái',        n: 2,  src: 'ch3'        },
+      { name: 'Cấu tạo & sửa chữa', n: 1,  src: 'ch4'        },
+      { name: 'Báo hiệu đường bộ',   n: 16, src: 'ch5'        },
+      { name: 'Sa hình & tình huống',n: 14, src: 'ch6'        },
+    ]
+  },
+};
 const CH_COLORS = {'#3d8ef8':'c-blue','#a060f8':'c-purple','#22d48a':'c-green','#f0a030':'c-amber','#f04060':'c-red','#20c8e0':'c-cyan'};
 const ANS_COLORS = {1:'#3d8ef8',2:'#22d48a',3:'#f0a030',4:'#a060f8',5:'#20c8e0'};
 
@@ -1058,19 +1123,25 @@ function startExam(){
   const mode=document.getElementById('exam-mode').value;
   const shuffle=document.getElementById('exam-shuffle').checked;
 
-  let pool=[];
-  if(type==='random') pool=[...DB];
-  else if(type==='full') pool=[...DB];
-  else if(type==='custom') pool=[...DB];
-  else if(type==='diemliet') pool = DB.filter(q => DIEM_LIET_IDS.has(q.id));
-  else {
-    const ch=CHAPTERS.find(c=>'ch'+c.id===type);
-    if(ch) pool=DB.filter(q=>q.id>=ch.range[0]&&q.id<=ch.range[1]);
-  }
+  let pool = [];
 
-  if(shuffle) pool.sort(()=>Math.random()-.5);
-  const n=(type==='full')?pool.length:Math.min(count,pool.length);
-  ES.qs=pool.slice(0,n);
+	// Đề chuẩn theo hạng — dùng buildExamPool
+	if (EXAM_CONFIGS[type]) {
+	  pool = buildExamPool(type, shuffle);
+	  ES.qs = pool;
+	} else {
+	  // Đề tùy chỉnh
+	  if (type === 'full')     pool = [...DB];
+	  else if (type === 'diemliet') pool = DB.filter(q => DIEM_LIET_IDS.has(q.id));
+	  else if (type === 'random' || type === 'custom') pool = [...DB];
+	  else {
+		const ch = CHAPTERS.find(c => 'ch' + c.id === type);
+		if (ch) pool = DB.filter(q => q.id >= ch.range[0] && q.id <= ch.range[1]);
+	  }
+	  if (shuffle) pool.sort(() => Math.random() - .5);
+	  const n = type === 'full' ? pool.length : Math.min(count, pool.length);
+	  ES.qs = pool.slice(0, n);
+	}
   ES.answers={};ES.current=0;ES.elapsed=0;ES.timeLimit=time*60;ES.mode=mode;ES.started=true;ES.paused=false;
 
   document.getElementById('exam-setup').style.display='none';
@@ -1313,6 +1384,87 @@ function renderDiemLiet() {
   document.getElementById('dl-list').innerHTML = qs.map(q => qCard(q)).join('') ||
     '<div style="padding:30px;text-align:center;color:var(--tx3)">Không tìm thấy</div>';
 }
+
+// Cập nhật UI khi đổi loại đề
+function onExamTypeChange() {
+  const type = document.getElementById('exam-type').value;
+  const cfg = EXAM_CONFIGS[type];
+  const countEl = document.getElementById('exam-count');
+  const timeEl  = document.getElementById('exam-time');
+
+  if (cfg) {
+    // Đề chuẩn: lock số câu + set time
+    countEl.value    = cfg.total;
+    countEl.disabled = true;
+    // Chọn option time gần nhất hoặc thêm custom
+    setExamTime(cfg.time);
+    // Hiển thị breakdown
+    renderExamBreakdown(cfg);
+  } else {
+    countEl.disabled = false;
+    document.getElementById('exam-breakdown').innerHTML = '';
+    if (type === 'full') { countEl.value = DB.length; countEl.disabled = true; }
+    if (type === 'diemliet') { countEl.value = 60; countEl.disabled = true; }
+  }
+}
+
+function setExamTime(minutes) {
+  const sel = document.getElementById('exam-time');
+  // Tìm option khớp, nếu không có thì chọn 0 (không giới hạn)
+  let found = false;
+  for (let o of sel.options) {
+    if (+o.value === minutes) { sel.value = o.value; found = true; break; }
+  }
+  if (!found) sel.value = '0';
+}
+
+function renderExamBreakdown(cfg) {
+  document.getElementById('exam-breakdown').innerHTML =
+    `<div class="box" style="padding:12px 14px">
+      <div class="box-title" style="margin-bottom:8px">Cơ cấu đề — ${cfg.total} câu</div>
+      ${cfg.slots.map(s =>
+        `<div class="bar-row">
+          <div class="bar-lbl" style="width:170px;font-size:11px">${s.name}</div>
+          <div class="bar-track" style="height:16px">
+            <div class="bar-fill" style="width:${s.n/cfg.total*100}%;background:var(--blue);font-size:10px">${s.n > cfg.total*0.08 ? s.n : ''}</div>
+          </div>
+          <div class="bar-num" style="font-size:11px">${s.n}</div>
+        </div>`
+      ).join('')}
+    </div>`;
+}
+
+// Build pool theo config hạng
+function buildExamPool(type, shuffle) {
+  const cfg = EXAM_CONFIGS[type];
+  if (!cfg) return null; // không phải đề chuẩn
+
+  // Source pools
+  const pools = {
+    ch1_normal: DB.filter(q => q.id >= 1   && q.id <= 180 && !DIEM_LIET_IDS.has(q.id)),
+    diem_liet:  DB.filter(q => DIEM_LIET_IDS.has(q.id)),
+    ch2:        DB.filter(q => q.id >= 181 && q.id <= 205),
+    ch3:        DB.filter(q => q.id >= 206 && q.id <= 263),
+    ch4:        DB.filter(q => q.id >= 264 && q.id <= 300),
+    ch5:        DB.filter(q => q.id >= 301 && q.id <= 485),
+    ch6:        DB.filter(q => q.id >= 486 && q.id <= 600),
+  };
+
+  // Shuffle mỗi pool trước khi lấy
+  Object.values(pools).forEach(p => p.sort(() => Math.random() - .5));
+
+  // Lấy đúng số câu theo slot
+  const result = [];
+  for (const slot of cfg.slots) {
+    const src = pools[slot.src] || [];
+    result.push(...src.slice(0, slot.n));
+  }
+
+  // Shuffle thứ tự câu trong đề nếu cần
+  if (shuffle) result.sort(() => Math.random() - .5);
+  return result;
+}
+
 // ═══════════════════════════════════════════════════════════
 // ANALYZE
 // ═══════════════════════════════════════════════════════════
@@ -1529,6 +1681,7 @@ function closeSidebar() {
 loadTipTemplate();
 renderHistory();
 tryAutoLoad();
+onExamTypeChange(); // render breakdown cho hạng B mặc định
 </script>
 <script src="gplx_tips.js"></script>
 </body>
