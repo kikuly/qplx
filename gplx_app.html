@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GPLX 2025 — Học & Thi Lái Xe</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Montserrat:wght@400;700;800&family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══ TOKENS ═══════════════════════════════════ */
+:root {
+  --bg:    #0d0f14; --bg2: #131720; --bg3: #1a2030; --bg4: #212840;
+  --bd:    #1e2840; --bd2: #2a3554;
+  --tx:    #c8d4e8; --tx2: #7a8fb5; --tx3: #4a5a80;
+  --blue:  #3d8ef8; --blue2: #1a5cc8;
+  --green: #22d48a; --red: #f04060; --amber: #f0a030;
+  --purple:#a060f8; --cyan: #20c8e0;
+  --mono: 'JetBrains Mono',monospace;
+  --ui:   'Noto Sans','Segoe UI',sans-serif;
+  --head: 'Be Vietnam Pro', 'Montserrat', sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--ui);font-size:14px;line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:3px}
+a{color:var(--blue);text-decoration:none}
+
+/* ═══ LAYOUT ══════════════════════════════════ */
+.app{display:grid;grid-template-rows:48px 1fr;height:100vh}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 16px;gap:12px;position:sticky;top:0;z-index:200}
+.logo{font-family:var(--head);font-weight:800;font-size:15px;color:var(--blue);letter-spacing:.05em;white-space:nowrap}
+.topbar-sep{width:1px;height:20px;background:var(--bd2);flex-shrink:0}
+.topbar-file{font-family:var(--mono);font-size:11px;color:var(--tx3)}
+.topbar-file span{color:var(--green)}
+.topbar-right{margin-left:auto;display:flex;gap:8px;align-items:center;flex-shrink:0}
+
+.body-wrap{display:grid;grid-template-columns:200px 1fr;overflow:hidden;height:calc(100vh - 48px)}
+.sidebar{background:var(--bg2);border-right:1px solid var(--bd);overflow-y:auto;padding:12px 0}
+.main{overflow-y:auto;padding:24px}
+
+/* ═══ SIDEBAR NAV ═════════════════════════════ */
+.nav-grp{margin-bottom:16px}
+.nav-grp-label{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tx3);padding:0 16px;margin-bottom:4px}
+.nav-item{display:flex;align-items:center;gap:8px;padding:7px 16px;cursor:pointer;font-size:13px;color:var(--tx2);transition:all .15s;user-select:none;border-left:2px solid transparent}
+.nav-item:hover{background:var(--bg3);color:var(--tx)}
+.nav-item.active{background:rgba(61,142,248,.1);color:var(--blue);border-left-color:var(--blue)}
+.nav-icon{width:16px;text-align:center;flex-shrink:0;font-size:13px}
+.nav-badge{margin-left:auto;font-family:var(--mono);font-size:10px;background:var(--bg3);color:var(--tx3);padding:1px 6px;border-radius:10px}
+.nav-item.active .nav-badge{background:rgba(61,142,248,.2);color:var(--blue)}
+
+/* ═══ BUTTONS ════════════════════════════════ */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:5px;font-family:var(--ui);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s;white-space:nowrap}
+.btn-primary{background:var(--blue2);color:#fff}.btn-primary:hover{background:var(--blue)}
+.btn-green{background:rgba(34,212,138,.15);color:var(--green);border:1px solid rgba(34,212,138,.3)}.btn-green:hover{background:rgba(34,212,138,.25)}
+.btn-red{background:rgba(240,64,96,.15);color:var(--red);border:1px solid rgba(240,64,96,.3)}.btn-red:hover{background:rgba(240,64,96,.25)}
+.btn-ghost{background:var(--bg3);color:var(--tx2);border:1px solid var(--bd)}.btn-ghost:hover{color:var(--tx);border-color:var(--bd2)}
+.btn-amber{background:rgba(240,160,48,.15);color:var(--amber);border:1px solid rgba(240,160,48,.3)}.btn-amber:hover{background:rgba(240,160,48,.25)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+
+/* ═══ PANELS ════════════════════════════════ */
+.panel{display:none;animation:fadeUp .2s ease}
+.panel.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.sec-header{display:flex;align-items:baseline;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.sec-title{font-family:var(--head);font-size:22px;font-weight:800;color:var(--tx)}
+.sec-sub{font-family:var(--mono);font-size:11px;color:var(--tx3)}
+
+/* ═══ CARDS / STATS ═══════════════════════════ */
+.stat-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:20px}
+.stat-card{background:var(--bg2);border:1px solid var(--bd);border-radius:6px;padding:14px;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.c-blue::before{background:var(--blue)}.c-green::before{background:var(--green)}.c-red::before{background:var(--red)}.c-amber::before{background:var(--amber)}.c-purple::before{background:var(--purple)}.c-cyan::before{background:var(--cyan)}
+.stat-val{font-family:var(--head);font-size:26px;font-weight:800;line-height:1;margin-bottom:3px}
+.c-blue .stat-val{color:var(--blue)}.c-green .stat-val{color:var(--green)}.c-red .stat-val{color:var(--red)}.c-amber .stat-val{color:var(--amber)}.c-purple .stat-val{color:var(--purple)}.c-cyan .stat-val{color:var(--cyan)}
+.stat-lbl{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.8px}
+
+/* ═══ CHART BOXES ════════════════════════════ */
+.box{background:var(--bg2);border:1px solid var(--bd);border-radius:6px;padding:18px;margin-bottom:14px}
+.box-title{font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--tx3);margin-bottom:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
+@media(max-width:900px){.grid2,.grid3{grid-template-columns:1fr}}
+
+/* ═══ BAR ════════════════════════════════════ */
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.bar-lbl{width:100px;font-size:11px;color:var(--tx2);text-align:right;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{flex:1;height:18px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;display:flex;align-items:center;padding-left:8px;font-size:10px;font-weight:700;color:rgba(255,255,255,.8);transition:width .6s cubic-bezier(.16,1,.3,1);min-width:2px}
+.bar-num{font-family:var(--mono);font-size:11px;color:var(--tx3);width:50px;text-align:right;flex-shrink:0}
+
+/* MOBILE TOGGLE */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: 1px solid var(--bd2);
+  border-radius: 4px;
+  color: var(--tx2);
+  padding: 5px 8px;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.sidebar.open { display: block !important; }
+
+.sidebar-backdrop {
+    display: none;
+  }
+@media(max-width:700px) {
+  .menu-toggle { display: flex; align-items: center; }
+  .body-wrap { grid-template-columns: 1fr; }
+  .sidebar {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    bottom: 0;
+    width: 220px;
+    z-index: 150;
+    box-shadow: 4px 0 20px rgba(0,0,0,.5);
+  }
+  .sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 48px 0 0 0;
+    background: rgba(0,0,0,.5);
+    z-index: 140;
+  }
+  .sidebar-backdrop.show { display: block; }
+}
+
+/* ═══ INSIGHT BOX ════════════════════════════ */
+.insight{display:flex;gap:10px;background:var(--bg2);border:1px solid var(--bd);border-left:3px solid var(--blue);padding:12px 14px;border-radius:0 6px 6px 0;margin-bottom:10px;font-size:13px}
+.insight.green{border-left-color:var(--green)}.insight.amber{border-left-color:var(--amber)}.insight.red{border-left-color:var(--red)}.insight.purple{border-left-color:var(--purple)}
+.insight-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.insight-body{color:var(--tx2);line-height:1.6}.insight-body strong{color:var(--tx)}
+
+/* ═══ TAGS ═══════════════════════════════════ */
+.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:600;border:1px solid;background:transparent}
+.tag-blue{border-color:var(--blue);color:var(--blue)}.tag-green{border-color:var(--green);color:var(--green)}.tag-red{border-color:var(--red);color:var(--red)}.tag-amber{border-color:var(--amber);color:var(--amber)}.tag-purple{border-color:var(--purple);color:var(--purple)}
+
+/* ═══ TABLES ════════════════════════════════ */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--bd);border-radius:6px;margin-bottom:14px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:var(--bg3);color:var(--tx3);font-size:10px;text-transform:uppercase;letter-spacing:1px;padding:9px 12px;text-align:left;border-bottom:1px solid var(--bd);white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid var(--bd);color:var(--tx2);vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.015)}
+td.num{font-family:var(--mono);color:var(--blue);text-align:right}
+td.ok{color:var(--green)} td.warn{color:var(--amber)} td.err{color:var(--red)}
+
+/* ═══ INPUTS ════════════════════════════════ */
+.input{background:var(--bg2);border:1px solid var(--bd2);border-radius:4px;padding:8px 11px;color:var(--tx);font-family:var(--ui);font-size:13px;outline:none;transition:border-color .2s;width:100%}
+.input:focus{border-color:var(--blue)}
+.input::placeholder{color:var(--tx3)}
+select.input{cursor:pointer}
+.toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+
+.q-dot-dl { border-color: rgba(240,64,96,.4) !important; }
+.q-dot-dl.current { background:rgba(240,64,96,.2); border-color:var(--red) !important; color:var(--red); }
+
+/* ═══ DROPZONE ═══════════════════════════════ */
+.dropzone{border:2px dashed var(--bd2);border-radius:8px;padding:50px 30px;text-align:center;cursor:pointer;transition:all .2s}
+.dropzone:hover,.dropzone.over{border-color:var(--blue);background:rgba(61,142,248,.05)}
+.drop-icon{font-size:40px;opacity:.4;margin-bottom:12px}
+.drop-title{font-family:var(--head);font-size:18px;font-weight:700;color:var(--tx);margin-bottom:6px}
+.drop-sub{color:var(--tx3);font-size:12px;margin-bottom:16px}
+
+/* ═══ QUESTION CARD (browse) ════════════════ */
+.q-card{background:var(--bg2);border:1px solid var(--bd);border-radius:6px;padding:16px;margin-bottom:10px}
+.q-card:hover{border-color:var(--bd2)}
+.q-meta{font-family:var(--mono);font-size:10px;color:var(--tx3);margin-bottom:8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.q-text{color:var(--tx);font-size:13px;margin-bottom:10px;line-height:1.55}
+.q-img{width:100%;max-width:400px;border-radius:4px;margin-bottom:10px;border:1px solid var(--bd);display:block;background:var(--bg3)}
+.q-img-placeholder{width:100%;max-width:400px;height:auto;background:var(--bg3);border:1px solid var(--bd);border-radius:4px;margin-bottom:10px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--tx3)}
+.q-opts{display:flex;flex-direction:column;gap:4px}
+.q-opt{padding:7px 10px;border-radius:4px;font-size:12px;display:flex;gap:8px;border:1px solid transparent;background:var(--bg3);color:var(--tx2)}
+.q-opt.correct{background:rgba(34,212,138,.08);border-color:rgba(34,212,138,.25);color:var(--green)}
+.q-opt-num{font-family:var(--mono);font-weight:700;flex-shrink:0}
+
+/* ═══ EXAM PANEL ══════════════════════════════ */
+.exam-header{background:var(--bg2);border:1px solid var(--bd);border-radius:8px;padding:16px 20px;margin-bottom:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.exam-timer{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--cyan);min-width:70px}
+.exam-timer.warn{color:var(--amber)}.exam-timer.danger{color:var(--red);animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.4}}
+.exam-progress{flex:1;min-width:120px}
+.exam-prog-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-top:4px}
+.exam-prog-fill{height:100%;background:var(--blue);border-radius:3px;transition:width .3s}
+.exam-prog-txt{font-family:var(--mono);font-size:11px;color:var(--tx3)}
+
+.exam-q{background:var(--bg2);border:1px solid var(--bd);border-radius:8px;padding:20px}
+.exam-q-num{font-family:var(--mono);font-size:11px;color:var(--tx3);margin-bottom:8px}
+.exam-q-text{font-size:15px;color:var(--tx);line-height:1.6;margin-bottom:14px;font-weight:500}
+.exam-q-img{width:100%;max-width:480px;border-radius:6px;margin-bottom:14px;border:1px solid var(--bd);display:block;background:var(--bg3)}
+.exam-q-img-ph{width:100%;max-width:480px;height:100px;background:var(--bg3);border:1px solid var(--bd);border-radius:6px;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--tx3);font-size:12px}
+
+.exam-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
+.exam-opt{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border-radius:6px;border:2px solid var(--bd);background:var(--bg3);cursor:pointer;transition:all .15s;font-size:13px;color:var(--tx)}
+.exam-opt:hover{border-color:var(--bd2);background:var(--bg4)}
+.exam-opt.selected{border-color:var(--blue);background:rgba(61,142,248,.1);color:var(--tx)}
+.exam-opt.correct{border-color:var(--green);background:rgba(34,212,138,.1);color:var(--green)}
+.exam-opt.wrong{border-color:var(--red);background:rgba(240,64,96,.1);color:var(--red)}
+.exam-opt.missed{border-color:rgba(34,212,138,.4);background:rgba(34,212,138,.05);color:var(--green)}
+.opt-num{width:24px;height:24px;border-radius:50%;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:700;flex-shrink:0}
+.exam-opt.selected .opt-num{background:var(--blue);border-color:var(--blue);color:#fff}
+.exam-opt.correct .opt-num{background:var(--green);border-color:var(--green);color:#000}
+.exam-opt.wrong .opt-num{background:var(--red);border-color:var(--red);color:#fff}
+
+.exam-nav{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.q-grid{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:14px}
+.q-dot{width:26px;height:26px;border-radius:4px;font-family:var(--mono);font-size:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--bg3);color:var(--tx3);border:1px solid var(--bd);transition:all .15s;flex-shrink:0}
+.q-dot:hover{border-color:var(--bd2);color:var(--tx)}
+.q-dot.current{border-color:var(--blue);color:var(--blue);background:rgba(61,142,248,.1)}
+.q-dot.answered{background:rgba(61,142,248,.15);color:var(--blue);border-color:rgba(61,142,248,.3)}
+.q-dot.correct{background:rgba(34,212,138,.15);color:var(--green);border-color:rgba(34,212,138,.3)}
+.q-dot.wrong{background:rgba(240,64,96,.15);color:var(--red);border-color:rgba(240,64,96,.3)}
+
+/* ═══ RESULT PANEL ════════════════════════════ */
+.result-score{text-align:center;padding:32px 20px;background:var(--bg2);border-radius:8px;border:1px solid var(--bd);margin-bottom:18px}
+.result-num{font-family:var(--head);font-size:64px;font-weight:800;line-height:1}
+.result-pass{color:var(--green)}.result-fail{color:var(--red)}
+.result-label{font-size:14px;color:var(--tx2);margin-top:6px}
+.result-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:18px}
+
+/* ═══ TIPS PAGE ═══════════════════════════════ */
+.tips-toc{background:var(--bg2);border:1px solid var(--bd);border-radius:6px;padding:14px 16px;margin-bottom:18px}
+.tips-toc-title{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--tx3);margin-bottom:8px}
+.toc-list{display:flex;flex-wrap:wrap;gap:6px}
+.toc-item{padding:4px 10px;border-radius:3px;background:var(--bg3);color:var(--tx2);font-size:12px;cursor:pointer;border:1px solid var(--bd);transition:all .15s}
+.toc-item:hover{color:var(--tx);border-color:var(--bd2)}
+
+.tip-section{background:var(--bg2);border:1px solid var(--bd);border-radius:6px;margin-bottom:12px;overflow:hidden}
+.tip-section-header{display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;background:var(--bg2);transition:background .15s}
+.tip-section-header:hover{background:var(--bg3)}
+.tip-section-title{font-family:var(--head);font-size:15px;font-weight:700;color:var(--tx);flex:1}
+.tip-badge{font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:3px;border:1px solid}
+.tip-chevron{color:var(--tx3);transition:transform .2s;font-size:12px}
+.tip-section.open .tip-chevron{transform:rotate(90deg)}
+.tip-body{padding:0 16px 16px;display:none}
+.tip-section.open .tip-body{display:block}
+
+.tip-table{width:100%;border-collapse:collapse;font-size:12px;margin:10px 0}
+.tip-table th{background:var(--bg3);padding:8px 12px;text-align:left;color:var(--tx2);font-size:11px;border-bottom:1px solid var(--bd)}
+.tip-table td{padding:8px 12px;border-bottom:1px solid var(--bd);color:var(--tx2)}
+.tip-table tr:last-child td{border-bottom:none}
+.tip-table td strong{color:var(--tx)}
+
+.speed-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;margin:10px 0}
+.speed-card{background:var(--bg3);border:1px solid var(--bd);border-radius:6px;padding:14px;text-align:center}
+.speed-val{font-family:var(--head);font-size:28px;font-weight:800;color:var(--cyan);line-height:1}
+.speed-unit{font-size:11px;color:var(--tx3);margin:2px 0 6px}
+.speed-desc{font-size:11px;color:var(--tx2);line-height:1.45}
+
+.rule-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin:10px 0}
+.rule-card{background:var(--bg3);border:1px solid var(--bd);border-radius:6px;padding:14px;border-top:2px solid}
+.rule-card-title{font-size:13px;font-weight:700;color:var(--tx);margin-bottom:6px}
+.rule-card ul{padding-left:14px;font-size:12px;color:var(--tx2)}
+.rule-card li{margin-bottom:3px;line-height:1.5}
+
+/* ═══ TEMPLATE EDITOR ════════════════════════ */
+.editor-area{background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:14px;font-family:var(--mono);font-size:12px;color:var(--tx);min-height:300px;outline:none;resize:vertical;width:100%;line-height:1.7}
+.preview-area{background:var(--bg2);border:1px solid var(--bd);border-radius:6px;padding:14px;min-height:200px;font-size:13px}
+
+/* ═══ LOADING ════════════════════════════════ */
+.loader{display:none;position:fixed;inset:0;background:rgba(13,15,20,.9);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+.loader.show{display:flex}
+.spinner{width:32px;height:32px;border:2px solid var(--bd2);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader-txt{font-family:var(--mono);font-size:12px;color:var(--tx2)}
+
+/* ═══ PAGINATION ════════════════════════════ */
+.pager{display:flex;gap:4px;margin-top:14px;flex-wrap:wrap;align-items:center}
+.pg-btn{background:var(--bg2);border:1px solid var(--bd);color:var(--tx2);padding:5px 9px;border-radius:3px;cursor:pointer;font-family:var(--mono);font-size:11px;transition:all .15s}
+.pg-btn:hover{border-color:var(--blue);color:var(--blue)}
+.pg-btn.active{background:var(--blue2);border-color:var(--blue);color:#fff}
+.pg-btn:disabled{opacity:.3;cursor:default}
+.pg-info{font-family:var(--mono);font-size:11px;color:var(--tx3);margin:0 6px}
+
+/* ═══ HEATMAP ════════════════════════════════ */
+.heatmap{display:grid;grid-template-columns:repeat(30,1fr);gap:3px}
+.hm-cell{aspect-ratio:1;border-radius:2px;cursor:pointer;transition:transform .1s;position:relative}
+.hm-cell:hover{transform:scale(1.5);z-index:2}
+.tooltip{position:fixed;background:var(--bg);border:1px solid var(--bd2);border-radius:4px;padding:6px 10px;font-size:11px;color:var(--tx);pointer-events:none;z-index:300;display:none;max-width:240px;line-height:1.5}
+.tooltip.show{display:block}
+
+/* ═══ RESPONSIVE ════════════════════════════ */
+@media(max-width:700px){
+  .body-wrap{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .main{padding:14px}
+}
+</style>
+</head>
+<body>
+<div id="loader" class="loader"><div class="spinner"></div><div class="loader-txt" id="loader-txt">Đang tải...</div></div>
+<div id="tooltip" class="tooltip"></div>
+
+<div class="app">
+  <!-- TOPBAR -->
+  <header class="topbar">
+	<button class="menu-toggle" onclick="toggleSidebar()" id="menu-toggle-btn">☰</button>
+    <div class="logo">⚡ GPLX 2025</div>
+    <div class="topbar-sep"></div>
+    <div class="topbar-file" id="top-status"><span>Chưa tải dữ liệu</span></div>
+    <div class="topbar-right">
+      <button class="btn btn-ghost" onclick="document.getElementById('fi').click()" style="font-size:12px">📂 Tải file</button>
+      <input type="file" id="fi" style="display:none" accept=".json,.xlsx,.xls" onchange="loadFile(this)">
+      <button class="btn btn-primary" onclick="switchTab('exam')" style="font-size:12px">🎯 Thi thử</button>
+    </div>
+  </header>
+
+  <div class="body-wrap">
+  <div id="sidebar-backdrop" class="sidebar-backdrop" onclick="closeSidebar()"></div>
+    <!-- SIDEBAR -->
+    <nav class="sidebar" id="sidebar">
+      <div class="nav-grp">
+        <div class="nav-grp-label">Học tập</div>
+        <div class="nav-item active" onclick="switchTab('home')"><span class="nav-icon">🏠</span>Tổng quan<span class="nav-badge" id="nb-total">—</span></div>
+        <div class="nav-item" onclick="switchTab('tips')"><span class="nav-icon">💡</span>Mẹo học nhanh</div>
+        <div class="nav-item" onclick="switchTab('exam')"><span class="nav-icon">🎯</span>Thực hành thi</div>
+      </div>
+      <div class="nav-grp">
+        <div class="nav-grp-label">Dữ liệu</div>
+        <div class="nav-item" onclick="switchTab('browse')"><span class="nav-icon">📖</span>Duyệt câu hỏi<span class="nav-badge" id="nb-browse">—</span></div>
+        <div class="nav-item" onclick="switchTab('diemliet')">
+		  <span class="nav-icon">🔴</span>Điểm liệt
+		  <span class="nav-badge" id="nb-diemliet">60</span>
+		</div>
+		<div class="nav-item" onclick="switchTab('analyze')"><span class="nav-icon">📊</span>Phân tích</div>
+        <div class="nav-item" onclick="switchTab('heatmap')"><span class="nav-icon">🗺</span>Heatmap</div>
+      </div>
+      <div class="nav-grp">
+        <div class="nav-grp-label">Công cụ</div>
+        <div class="nav-item" onclick="switchTab('template')"><span class="nav-icon">✏️</span>Template mẹo</div>
+        <div class="nav-item" onclick="switchTab('export')"><span class="nav-icon">📥</span>Export</div>
+      </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="main" id="main">
+
+      <!-- ═══ HOME ═══════════════════════════════════════════ -->
+      <div id="tab-home" class="panel active">
+        <div class="sec-header"><div class="sec-title">Tổng quan</div><div class="sec-sub" id="home-sub">Chưa tải dữ liệu</div></div>
+
+        <!-- Drop zone (shown when no data) -->
+        <div id="home-drop" class="dropzone" onclick="document.getElementById('fi').click()"
+          ondragover="event.preventDefault();this.classList.add('over')"
+          ondragleave="this.classList.remove('over')"
+          ondrop="handleDrop(event)">
+          <div class="drop-icon">📂</div>
+          <div class="drop-title">Kéo thả hoặc nhấn để tải file</div>
+          <div class="drop-sub">Hỗ trợ <strong>.json</strong> (600 câu GPLX) và <strong>.xlsx/.xls</strong></div>
+          <div style="display:flex;gap:8px;justify-content:center;margin-top:10px">
+            <span class="tag tag-blue">JSON</span>
+            <span class="tag tag-amber">XLSX</span>
+          </div>
+        </div>
+
+        <!-- Stats (shown after data loaded) -->
+        <div id="home-data" style="display:none">
+          <div class="stat-row" id="home-stats"></div>
+          <div class="grid2">
+            <div class="box" id="box-ansdist"><div class="box-title">Phân bố đáp án đúng</div></div>
+            <div class="box" id="box-chapters"><div class="box-title">Số câu theo chương</div></div>
+          </div>
+          <div id="home-insights"></div>
+        </div>
+      </div>
+
+      <!-- ═══ TIPS ═══════════════════════════════════════════ -->
+      <div id="tab-tips" class="panel">
+        <div class="sec-header"><div class="sec-title">💡 Mẹo học nhanh 600 câu</div></div>
+        <div class="tips-toc">
+          <div class="tips-toc-title">Mục lục nhanh</div>
+          <div class="toc-list" id="tips-toc-list"></div>
+        </div>
+        <div id="tips-content"></div>
+      </div>
+
+      <!-- ═══ EXAM ═══════════════════════════════════════════ -->
+      <div id="tab-exam" class="panel">
+        <!-- Setup screen -->
+        <div id="exam-setup">
+          <div class="sec-header"><div class="sec-title">🎯 Thực hành thi</div></div>
+          <div class="box">
+            <div class="box-title">Cấu hình bộ đề</div>
+            <div class="grid2" style="margin-bottom:14px">
+              <div>
+                <div style="font-size:12px;color:var(--tx2);margin-bottom:6px">Loại bộ đề</div>
+                <select class="input" id="exam-type">
+                  <option value="random">🎲 Ngẫu nhiên 50 câu</option>
+				  <option value="diemliet">🔴 Chỉ câu điểm liệt (60 câu)</option>
+                  <option value="ch1">Chương I — Quy định chung (180 câu)</option>
+                  <option value="ch2">Chương II — Văn hóa GT (25 câu)</option>
+                  <option value="ch3">Chương III — Kỹ thuật lái (58 câu)</option>
+                  <option value="ch4">Chương IV — Cấu tạo (37 câu)</option>
+                  <option value="ch5">Chương V — Biển báo (185 câu)</option>
+                  <option value="ch6">Chương VI — Sa hình (114 câu)</option>
+                  <option value="full">📋 Toàn bộ 600 câu</option>
+                  <option value="custom">✏️ Tùy chỉnh số câu</option>
+                </select>
+              </div>
+              <div>
+                <div style="font-size:12px;color:var(--tx2);margin-bottom:6px">Số câu thi</div>
+                <input class="input" type="number" id="exam-count" value="50" min="5" max="599">
+              </div>
+            </div>
+            <div class="grid2" style="margin-bottom:16px">
+              <div>
+                <div style="font-size:12px;color:var(--tx2);margin-bottom:6px">Thời gian</div>
+                <select class="input" id="exam-time">
+                  <option value="0">Không giới hạn</option>
+                  <option value="19">19 phút (đề A1/A2)</option>
+                  <option value="22" selected>22 phút (đề B1/B2)</option>
+                  <option value="30">30 phút (đề C/D)</option>
+                  <option value="45">45 phút (đề E/F)</option>
+                </select>
+              </div>
+              <div>
+                <div style="font-size:12px;color:var(--tx2);margin-bottom:6px">Hiển thị đáp án</div>
+                <select class="input" id="exam-mode">
+                  <option value="after">Sau khi nộp bài</option>
+                  <option value="instant">Ngay sau mỗi câu</option>
+                </select>
+              </div>
+            </div>
+            <div style="margin-bottom:14px">
+              <label style="display:flex;gap:8px;align-items:center;font-size:13px;color:var(--tx2);cursor:pointer">
+                <input type="checkbox" id="exam-shuffle" checked style="accent-color:var(--blue)">
+                Trộn thứ tự câu hỏi
+              </label>
+            </div>
+            <button class="btn btn-primary" onclick="startExam()" style="width:100%;justify-content:center;padding:12px">
+              🚀 Bắt đầu thi
+            </button>
+          </div>
+
+          <!-- Session history -->
+          <div id="exam-history-box" style="display:none">
+            <div class="box-title" style="margin-bottom:10px">Lịch sử thi gần đây</div>
+            <div id="exam-history"></div>
+          </div>
+        </div>
+
+        <!-- Exam screen -->
+        <div id="exam-screen" style="display:none">
+          <div class="exam-header">
+            <div class="exam-timer" id="exam-timer">22:00</div>
+            <div class="exam-progress">
+              <div class="exam-prog-txt" id="exam-prog-txt">Câu 1 / 50</div>
+              <div class="exam-prog-bar"><div class="exam-prog-fill" id="exam-prog-fill" style="width:2%"></div></div>
+            </div>
+            <button class="btn btn-ghost" onclick="pauseExam()" id="btn-pause">⏸ Tạm dừng</button>
+            <button class="btn btn-amber" onclick="submitExam()">✅ Nộp bài</button>
+            <button class="btn btn-ghost" onclick="exitExam()">✕ Thoát</button>
+          </div>
+
+          <div class="box" id="q-nav-box" style="margin-bottom:14px">
+            <div class="box-title">Bảng câu hỏi</div>
+            <div class="q-grid" id="q-nav-grid"></div>
+          </div>
+
+          <div class="exam-q" id="exam-q-panel">
+            <div class="exam-q-num" id="exam-q-num">Câu 1 · #1</div>
+            <div class="exam-q-text" id="exam-q-text"></div>
+            <div id="exam-q-img-wrap"></div>
+            <div class="exam-opts" id="exam-opts"></div>
+            <div class="exam-nav">
+              <button class="btn btn-ghost" onclick="prevQ()" id="btn-prev">← Câu trước</button>
+              <button class="btn btn-primary" onclick="nextQ()" id="btn-next">Câu tiếp →</button>
+              <button class="btn btn-green" onclick="submitExam()" style="margin-left:auto" id="btn-submit-exam">✅ Nộp bài</button>
+            </div>
+            <div id="exam-explanation" style="display:none;margin-top:12px"></div>
+          </div>
+        </div>
+
+        <!-- Result screen -->
+        <div id="exam-result" style="display:none">
+          <div class="sec-header"><div class="sec-title">Kết quả thi</div></div>
+          <div class="result-score">
+            <div class="result-num" id="result-score-txt"></div>
+            <div class="result-label" id="result-label"></div>
+            <div style="margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+              <button class="btn btn-primary" onclick="reviewExam()">📋 Xem đáp án</button>
+              <button class="btn btn-ghost" onclick="restartExam()">🔄 Thi lại</button>
+            </div>
+          </div>
+          <div class="result-grid" id="result-stats"></div>
+          <div id="result-wrong-list"></div>
+        </div>
+
+        <!-- Review screen -->
+        <div id="exam-review" style="display:none">
+          <div class="sec-header">
+            <div class="sec-title">Review đáp án</div>
+            <button class="btn btn-ghost" onclick="showResult()" style="margin-left:auto;font-size:12px">← Kết quả</button>
+          </div>
+          <div id="review-list"></div>
+        </div>
+      </div>
+
+      <!-- ═══ BROWSE ═══════════════════════════════════════ -->
+      <div id="tab-browse" class="panel">
+        <div class="sec-header"><div class="sec-title">Duyệt câu hỏi</div></div>
+        <div class="toolbar">
+          <input class="input" id="srch" placeholder="🔍 Tìm..." oninput="doBrowse()" style="flex:1;min-width:140px">
+          <select class="input" id="f-chap" onchange="doBrowse()" style="width:auto">
+            <option value="">Tất cả chương</option>
+            <option value="1">Ch.I (1–180)</option><option value="2">Ch.II (181–205)</option>
+            <option value="3">Ch.III (206–263)</option><option value="4">Ch.IV (264–300)</option>
+            <option value="5">Ch.V (301–485)</option><option value="6">Ch.VI (486–600)</option>
+          </select>
+          <select class="input" id="f-ans" onchange="doBrowse()" style="width:auto">
+            <option value="">Mọi đáp án</option>
+            <option value="1">ĐA 1</option><option value="2">ĐA 2</option>
+            <option value="3">ĐA 3</option><option value="4">ĐA 4+</option>
+          </select>
+          <select class="input" id="f-img" onchange="doBrowse()" style="width:auto">
+            <option value="">Tất cả</option>
+            <option value="yes">Có hình ảnh</option>
+            <option value="no">Không có hình</option>
+          </select>
+		  <select class="input" id="f-dl" onchange="doBrowse()" style="width:auto">
+			  <option value="">Tất cả</option>
+			  <option value="yes">🔴 Điểm liệt</option>
+			  <option value="no">Không điểm liệt</option>
+			</select>
+        </div>
+        <div id="browse-cnt" style="font-size:12px;color:var(--tx3);margin-bottom:10px"></div>
+        <div id="browse-list"></div>
+        <div class="pager" id="browse-pager"></div>
+      </div>
+
+      <!-- ═══ ANALYZE ══════════════════════════════════════ -->
+      <div id="tab-analyze" class="panel">
+        <div class="sec-header"><div class="sec-title">Phân tích dữ liệu</div></div>
+        <div class="stat-row" id="analyze-stats"></div>
+        <div class="grid2">
+          <div class="box" id="analyze-ans-dist"><div class="box-title">Đáp án đúng theo vị trí</div></div>
+          <div class="box" id="analyze-ch-dist"><div class="box-title">Phân bố theo chương</div></div>
+        </div>
+        <div class="box">
+          <div class="box-title">Phân tích "Cả ... ý trên"</div>
+          <div id="analyze-ca-y"></div>
+        </div>
+        <div class="box">
+          <div class="box-title">Top 15 từ khóa trong câu hỏi</div>
+          <div id="analyze-keywords" style="display:flex;flex-wrap:wrap;gap:6px;padding-top:4px"></div>
+        </div>
+        <div class="box">
+          <div class="box-title">Câu hỏi dài nhất (Top 8)</div>
+          <div class="tbl-wrap" style="border:none"><table id="analyze-longest"><thead><tr><th>ID</th><th>Chương</th><th>Ký tự</th><th>Câu hỏi</th></tr></thead><tbody></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- ═══ HEATMAP ══════════════════════════════════════ -->
+      <div id="tab-heatmap" class="panel">
+        <div class="sec-header"><div class="sec-title">Heatmap 600 câu</div></div>
+        <div class="insight"><div class="insight-icon">🎨</div><div class="insight-body">Hover để xem câu hỏi · Click để nhảy đến câu đó trong mục Duyệt</div></div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px;font-size:12px">
+          <span>🔵 Đáp án 1</span><span>🟢 Đáp án 2</span><span>🟡 Đáp án 3</span><span>🟣 Đáp án 4+</span>
+        </div>
+        <div class="box"><div class="heatmap" id="heatmap"></div></div>
+        <div class="box">
+          <div class="box-title">Chapter legend</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px" id="chap-legend"></div>
+        </div>
+      </div>
+
+      <!-- ═══ TEMPLATE ══════════════════════════════════════ -->
+      <div id="tab-template" class="panel">
+        <div class="sec-header"><div class="sec-title">✏️ Template mẹo tùy chỉnh</div></div>
+        <div class="insight purple">
+          <div class="insight-icon">📝</div>
+          <div class="insight-body">Viết mẹo theo format JSON dưới đây. Nhấn <strong>Xem trước</strong> để kiểm tra rồi <strong>Thêm vào trang Mẹo</strong>.</div>
+        </div>
+        <div class="grid2">
+          <div>
+            <div style="font-size:12px;color:var(--tx2);margin-bottom:6px">JSON template:</div>
+            <textarea id="tip-editor" class="editor-area" spellcheck="false"></textarea>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button class="btn btn-ghost" onclick="loadTipTemplate()">📄 Mẫu</button>
+              <button class="btn btn-primary" onclick="previewTip()">👁 Xem trước</button>
+              <button class="btn btn-green" onclick="addTip()">➕ Thêm vào Mẹo</button>
+              <button class="btn btn-red" onclick="resetCustomTips()">🗑 Xóa tất cả custom</button>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:12px;color:var(--tx2);margin-bottom:6px">Preview:</div>
+            <div id="tip-preview" class="preview-area"></div>
+          </div>
+        </div>
+        <div class="box" style="margin-top:14px">
+          <div class="box-title">Hướng dẫn schema JSON</div>
+          <pre style="font-size:11px;color:var(--tx2);line-height:1.7;overflow-x:auto">
+{
+  "id": "my-tip-001",           // unique ID
+  "title": "Tên mẹo",           // hiển thị trong mục lục
+  "icon": "🚀",                  // icon (emoji)
+  "badge": "Custom",             // nhãn badge (tùy chọn)
+  "color": "#3d8ef8",            // màu border-top
+  "type": "text|table|rules|speeds",  // kiểu hiển thị
+  "content": [                   // nội dung (tùy type)
+    { "text": "..." },           // type=text: đoạn văn
+    { "html": "..." },           // type=text: raw HTML
+    { "insight": "...", "class": "green" }  // insight box
+  ]
+}
+// type=table: thêm "headers":[], "rows":[[...]]
+// type=rules: thêm "cards":[{"title","color","items":[]}]
+// type=speeds: thêm "items":[{"val","unit","desc"}]</pre>
+        </div>
+      </div>
+<div id="tab-diemliet" class="panel">
+  <div class="sec-header">
+    <div class="sec-title">🔴 Câu điểm liệt</div>
+    <div class="sec-sub">60 câu — Sai 1 câu là trượt dù đúng hết câu còn lại</div>
+  </div>
+  <div class="insight red" style="margin-bottom:16px">
+    <div class="insight-icon">⚠️</div>
+    <div class="insight-body">
+      <strong>Điểm liệt là gì?</strong> Một số câu trong đề thi được đánh dấu điểm liệt. 
+      Nếu trả lời SAI bất kỳ 1 câu điểm liệt → <strong>TRƯỢT toàn bộ đề</strong>, 
+      dù tất cả câu còn lại đều đúng. Học kỹ 60 câu này trước tiên.
+    </div>
+  </div>
+  <div class="stat-row">
+    <div class="stat-card c-red"><div class="stat-val">60</div><div class="stat-lbl">Câu điểm liệt</div></div>
+    <div class="stat-card c-amber" id="dl-stat-loaded"><div class="stat-val">—</div><div class="stat-lbl">Đã tải dữ liệu</div></div>
+    <div class="stat-card c-blue"><div class="stat-val" id="dl-stat-ch1">—</div><div class="stat-lbl">Chương I</div></div>
+    <div class="stat-card c-green"><div class="stat-val" id="dl-stat-other">—</div><div class="stat-lbl">Chương khác</div></div>
+  </div>
+  <div class="toolbar">
+    <input class="input" id="dl-srch" placeholder="🔍 Tìm trong điểm liệt..." oninput="renderDiemLiet()" style="flex:1">
+  </div>
+  <div id="dl-list"></div>
+</div>
+      <!-- ═══ EXPORT ═══════════════════════════════════════ -->
+      <div id="tab-export" class="panel">
+        <div class="sec-header"><div class="sec-title">Export dữ liệu</div></div>
+        <div class="grid2">
+          <button class="btn btn-primary" onclick="doExport('json')" style="justify-content:center;padding:14px">📥 Export JSON</button>
+          <button class="btn btn-green" onclick="doExport('csv')" style="justify-content:center;padding:14px">📊 Export CSV</button>
+        </div>
+        <div class="box">
+          <div class="box-title">Preview (3 câu đầu)</div>
+          <pre id="raw-pre" style="font-size:11px;color:var(--tx2);overflow:auto;max-height:400px;line-height:1.6">// Tải file để xem</pre>
+        </div>
+      </div>
+
+    </main><!-- /main -->
+  </div>
+</div>
+
+<script>
+'use strict';
+// ═══════════════════════════════════════════════════════════
+// CONSTANTS
+// ═══════════════════════════════════════════════════════════
+const CHAPTERS = [
+  {id:1,name:'Quy định chung & quy tắc GT',short:'Ch.I',range:[1,180],color:'#3d8ef8'},
+  {id:2,name:'Văn hóa GT, đạo đức, PCCC',short:'Ch.II',range:[181,205],color:'#a060f8'},
+  {id:3,name:'Kỹ thuật lái xe',short:'Ch.III',range:[206,263],color:'#22d48a'},
+  {id:4,name:'Cấu tạo & sửa chữa',short:'Ch.IV',range:[264,300],color:'#f0a030'},
+  {id:5,name:'Báo hiệu đường bộ (biển báo)',short:'Ch.V',range:[301,485],color:'#f04060'},
+  {id:6,name:'Sa hình & tình huống',short:'Ch.VI',range:[486,600],color:'#20c8e0'},
+];
+const DIEM_LIET_IDS = new Set([
+  19,20,21,22,23,24,25,26,27,28,30,32,34,35,47,48,52,53,55,58,
+  63,64,65,66,67,68,70,71,72,73,74,85,86,87,88,89,90,91,92,93,
+  97,98,102,117,163,165,167,197,198,206,215,226,234,245,246,252,
+  253,254,255,260
+]);
+const CH_COLORS = {'#3d8ef8':'c-blue','#a060f8':'c-purple','#22d48a':'c-green','#f0a030':'c-amber','#f04060':'c-red','#20c8e0':'c-cyan'};
+const ANS_COLORS = {1:'#3d8ef8',2:'#22d48a',3:'#f0a030',4:'#a060f8',5:'#20c8e0'};
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+let DB = [];         // all questions
+let BROWSE = [];     // filtered
+let BP = 1;          // browse page
+const BPS = 15;      // page size
+let CUSTOM_TIPS = JSON.parse(localStorage.getItem('gplx_custom_tips')||'[]');
+
+// Exam state
+let ES = {
+  qs:[],answers:{},current:0,timer:null,elapsed:0,
+  timeLimit:0,mode:'after',started:false,paused:false
+};
+
+// ═══════════════════════════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════════════════════════
+function switchTab(name){
+ if(window.innerWidth <= 700) closeSidebar();
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const p=document.getElementById('tab-'+name);
+  if(p)p.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>{
+    if(n.getAttribute('onclick')?.includes("'"+name+"'"))n.classList.add('active');
+  });
+  if(name==='tips')buildTipsPage();
+  if(name==='analyze')buildAnalyze();
+  if(name==='heatmap')buildHeatmap();
+  if(name==='diemliet')renderDiemLiet();
+  if(name==='browse'){doBrowse();}
+}
+
+// ═══════════════════════════════════════════════════════════
+// FILE LOADING
+// ═══════════════════════════════════════════════════════════
+function handleDrop(e){
+  e.preventDefault();
+  document.querySelectorAll('.dropzone').forEach(d=>d.classList.remove('over'));
+  if(e.dataTransfer.files[0]) processFile(e.dataTransfer.files[0]);
+}
+function loadFile(inp){if(inp.files[0])processFile(inp.files[0]);}
+function processFile(file){
+  const ext=file.name.split('.').pop().toLowerCase();
+  showLoader(`Đang đọc ${file.name}...`);
+  if(ext==='json'){
+    const r=new FileReader();
+    r.onload=e=>{try{const d=JSON.parse(e.target.result);initData(Array.isArray(d)?d:d.questions||[],file.name);}catch(err){hideLoader();alert('Lỗi JSON: '+err.message);}};
+    r.readAsText(file);
+  } else {
+    hideLoader(); alert('Chỉ hỗ trợ .json');
+  }
+}
+
+// Auto-load gplx_600.json if available
+async function tryAutoLoad(){
+  try{
+    const r=await fetch('./gplx_600.json');
+    if(!r.ok)return;
+    const d=await r.json();
+    initData(Array.isArray(d)?d:d.questions||[],'gplx_600.json');
+  }catch(e){/* file not available */}
+}
+
+function initData(raw, filename){
+  DB = raw.map(q=>({
+    id: +q.id||0,
+    question: q.question||'',
+    options: Array.isArray(q.options)?q.options:[],
+    correct: q.correct?+q.correct:null,
+    image: q.image||q.img||null
+  })).filter(q=>q.question);
+  DB.sort((a,b)=>a.id-b.id);
+  BROWSE=[...DB];BP=1;
+
+  document.getElementById('home-drop').style.display='none';
+  document.getElementById('home-data').style.display='block';
+  document.getElementById('nb-total').textContent=DB.length;
+  document.getElementById('nb-browse').textContent=DB.length;
+  document.getElementById('top-status').innerHTML=`<span>${filename}</span> — ${DB.length} câu`;
+  document.getElementById('home-sub').textContent=`${filename} · ${DB.length} câu · ${DB.filter(q=>q.image).length} có ảnh`;
+  document.getElementById('raw-pre').textContent=JSON.stringify(DB.slice(0,3),null,2);
+  buildHomeStats(); hideLoader();
+}
+
+// ═══════════════════════════════════════════════════════════
+// HOME STATS
+// ═══════════════════════════════════════════════════════════
+function buildHomeStats(){
+  const total=DB.length;
+  const withAns=DB.filter(q=>q.correct).length;
+  const withImg=DB.filter(q=>q.image).length;
+  const avgOpts=(DB.reduce((s,q)=>s+q.options.length,0)/total).toFixed(1);
+
+  document.getElementById('home-stats').innerHTML=[
+    {v:total,l:'Tổng câu',c:'c-blue'},
+    {v:withAns,l:'Có đáp án',c:'c-green'},
+    {v:withImg,l:'Có hình ảnh',c:'c-cyan'},
+    {v:DB.filter(q=>!q.correct).length,l:'Chưa có ĐA',c:'c-red'},
+    {v:avgOpts,l:'TB lựa chọn',c:'c-amber'},
+    {v:CHAPTERS.length,l:'Chương',c:'c-purple'},
+  ].map(s=>`<div class="stat-card ${s.c}"><div class="stat-val">${s.v}</div><div class="stat-lbl">${s.l}</div></div>`).join('');
+
+  // Answer dist
+  const ad={};DB.forEach(q=>{if(q.correct)ad[q.correct]=(ad[q.correct]||0)+1;});
+  const maxA=Math.max(...Object.values(ad));
+  document.getElementById('box-ansdist').innerHTML=`<div class="box-title">Phân bố đáp án đúng</div>`+
+    Object.entries(ad).sort((a,b)=>+a[0]-+b[0]).map(([k,v])=>`
+    <div class="bar-row">
+      <div class="bar-lbl">Đáp án ${k}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${v/maxA*100}%;background:${ANS_COLORS[k]||'#555'}">${v>maxA*.12?v:''}</div></div>
+      <div class="bar-num">${v} <span style="color:var(--tx3)">(${(v/withAns*100).toFixed(0)}%)</span></div>
+    </div>`).join('');
+
+  // Chapter dist
+  const maxC=Math.max(...CHAPTERS.map(c=>DB.filter(q=>q.id>=c.range[0]&&q.id<=c.range[1]).length));
+  document.getElementById('box-chapters').innerHTML=`<div class="box-title">Số câu theo chương</div>`+
+    CHAPTERS.map(ch=>{
+      const cnt=DB.filter(q=>q.id>=ch.range[0]&&q.id<=ch.range[1]).length;
+      return `<div class="bar-row">
+        <div class="bar-lbl" title="${ch.name}">${ch.short}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${cnt/maxC*100}%;background:${ch.color}">${cnt>maxC*.1?cnt:''}</div></div>
+        <div class="bar-num">${cnt}</div>
+      </div>`;
+    }).join('');
+
+  // Insights
+  const caYq=DB.filter(q=>q.options.some(o=>/cả ba ý/i.test(o.text)));
+  const caYc=caYq.filter(q=>q.correct&&q.options.find(o=>o.num===q.correct&&/cả ba ý/i.test(o.text)));
+  document.getElementById('home-insights').innerHTML=`
+    <div class="insight green"><div class="insight-icon">✅</div>
+    <div class="insight-body"><strong>Tip nhanh:</strong> "Cả ba ý trên" là đáp án đúng trong <strong>${caYc.length}/${caYq.length} câu (${caYq.length?Math.round(caYc.length/caYq.length*100):0}%)</strong>. Khi thấy option này → ưu tiên chọn.</div></div>
+    <div class="insight"><div class="insight-icon">🖼</div>
+    <div class="insight-body">Công cụ học hiệu quả.</div></div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// TIPS PAGE (built-in pre-analyzed)
+// ═══════════════════════════════════════════════════════════
+const BUILTIN_TIPS = [
+  {
+    id:'tip-01',title:'Quy tắc vàng: "Cả ba / hai ý trên"',icon:'🏆',badge:'86% chính xác',color:'#22d48a',
+    type:'table',
+    intro:'Đây là mẫu đáng tin cậy nhất trong toàn bộ 600 câu, phát hiện qua phân tích dữ liệu thực tế:',
+    headers:['Option','Xuất hiện','Là ĐA đúng','Tỷ lệ','Ghi chú'],
+    rows:[
+      ['"Cả ba ý trên"','29 câu','25 câu','86%','✅ Ưu tiên chọn khi thấy'],
+      ['"Cả hai ý trên"','62 câu','34 câu','55%','⚠️ Cân nhắc từng trường hợp'],
+      ['"Gồm đầy đủ..."','3 câu','3 câu','100%','✅ Luôn chọn option đầy đủ nhất'],
+    ],
+    after:[
+      {insight:'<strong>Nguyên tắc "Option đầy đủ nhất":</strong> Câu hỏi dạng "gồm những loại nào / đối tượng nào" → chọn đáp án liệt kê <strong>đầy đủ nhất</strong>. Người soạn đề thường bẫy bằng cách đưa ra option chỉ liệt kê một phần.',cls:'green'}
+    ]
+  },
+  {
+    id:'tip-02',title:'Con số PHẢI thuộc lòng (tốc độ)',icon:'🚗',badge:'12 con số',color:'#f0a030',
+    type:'speeds',
+    intro:'Chỉ cần thuộc ~25 con số quan trọng — giải được ~10% đề thi tự tin. Tốc độ tối đa theo loại đường:',
+    items:[
+      {val:'40',unit:'km/h',desc:'Xe gắn máy, xe máy chuyên dùng (mọi đường)'},
+      {val:'50',unit:'km/h',desc:'Ô tô tải/người >28 chỗ — đông dân cư, đường 2 chiều 1 làn'},
+      {val:'60',unit:'km/h',desc:'Ô tô con/buýt — đông dân cư, đường đôi ≥2 làn'},
+      {val:'70',unit:'km/h',desc:'Ô tô tải/buýt — ngoài KV đông dân cư, đường 1 làn'},
+      {val:'80',unit:'km/h',desc:'Ô tô con — ngoài KV đông dân cư, đường đôi ≥2 làn'},
+      {val:'100–120',unit:'km/h',desc:'Đường cao tốc (tùy loại xe)'},
+    ],
+    after:[{insight:'<strong>Cách nhớ:</strong> 40 → 50 → 60 → 70 → 80 → 100/120. Tăng 10–20 mỗi cấp đường. Xe cồng kềnh/nặng luôn thấp hơn xe con cùng loại đường.',cls:''}]
+  },
+  {
+    id:'tip-03',title:'Độ tuổi & hạng GPLX quan trọng',icon:'👤',badge:'8 câu',color:'#3d8ef8',
+    type:'table',
+    intro:'Chỉ 8 câu về độ tuổi nhưng hay gặp trong đề thi. Học thuộc bảng này:',
+    headers:['Tuổi','Quyền / Giới hạn'],
+    rows:[
+      ['16–17 tuổi','Chỉ được lái xe gắn máy (≤50cc hoặc công suất thấp)'],
+      ['18 tuổi','Mô tô 2 bánh (A1), ô tô tải/chở người (B1/B2)'],
+      ['24 tuổi','Hạng D1 — ô tô chở người 9–16 chỗ (không kể lái)'],
+      ['27 tuổi','Hạng D — ô tô chở người >29 chỗ (không kể lái)'],
+      ['Nam 57 / Nữ 55','TUỔI TỐI ĐA lái xe buýt/chở người >29 chỗ'],
+      ['Trẻ <10 tuổi và <1,35m','Không được ngồi cùng hàng ghế lái (trừ xe 1 hàng ghế)'],
+    ],
+    after:[{insight:'<strong>Mẹo nhớ:</strong> 16 → 18 → 24 → 27 là 4 mốc tăng dần. Tuổi nghỉ lái buýt: Nam 57 (5+7=12), Nữ 55 (5+5=10).',cls:'amber'}]
+  },
+  {
+    id:'tip-04',title:'Khoảng cách & thời gian quan trọng',icon:'📏',badge:'Số phải nhớ',color:'#20c8e0',
+    type:'rules',
+    intro:'',
+    cards:[
+      {title:'Khoảng cách an toàn',color:'#20c8e0',items:['Tốc độ <60 km/h → cách xe trước ≥35m','Tốc độ 60–80 km/h → ≥55m','Tốc độ 80–100 km/h → ≥70m','Tốc độ >100 km/h → ≥100m']},
+      {title:'Giờ quan trọng',color:'#3d8ef8',items:['22h–05h sáng: trong đô thị chỉ báo hiệu bằng ĐÈN (không bấm còi)','Còi: cấm trong khu vực có biển cấm, gần trường học/bệnh viện']},
+      {title:'Nồng độ cồn',color:'#f04060',items:['Ô tô & mô tô: = 0 (tuyệt đối zero)','Vi phạm → bị phạt tiền + tước GPLX','Ma túy: cũng bị cấm, xử phạt tương tự']},
+      {title:'Số chỗ ngồi (ngưỡng quan trọng)',color:'#f0a030',items:['8 chỗ: xe minivan/MPV thông thường','16 chỗ: ngưỡng phân loại hạng D1','28 chỗ: ngưỡng xe buýt nhỏ','29 chỗ: ngưỡng hạng D + tuổi nghỉ hưu lái xe']},
+    ],
+    after:[]
+  },
+  {
+    id:'tip-05',title:'Học biển báo theo màu & hình dạng (Chương V)',icon:'🚦',badge:'185 câu',color:'#f04060',
+    type:'rules',
+    intro:'Não bộ nhớ màu sắc và hình dạng nhanh hơn chữ viết 3–5 lần. Học theo nguyên tắc: Hình dạng → Màu → Ý nghĩa:',
+    cards:[
+      {title:'🔴 Biển CẤM — Tròn viền đỏ',color:'#f04060',items:['Nền TRẮNG, biểu tượng ĐEN, viền ĐỎ','Ý nghĩa: CẤM phương tiện/hành vi cụ thể','Nhớ nhanh: Tròn đỏ = Cấm','Ví dụ: C1 (cấm ngược chiều), C11a (cấm xe tải)']},
+      {title:'⚠️ Biển NGUY HIỂM — Tam giác viền đỏ',color:'#f0a030',items:['Nền VÀNG, biểu tượng ĐEN, viền ĐỎ','Ý nghĩa: CẢNH BÁO nguy hiểm phía trước','Nhớ nhanh: Tam giác vàng = Cảnh báo','Ví dụ: W.201 (đường cong nguy hiểm)']},
+      {title:'🔵 Biển HIỆU LỆNH — Tròn nền xanh',color:'#3d8ef8',items:['Nền XANH DƯƠNG, biểu tượng TRẮNG','Ý nghĩa: BẮT BUỘC thực hiện','Nhớ nhanh: Tròn xanh = Bắt buộc','Ví dụ: R.301 (chiều xe chạy)']},
+      {title:'🟩 Biển CHỈ DẪN — Chữ nhật/vuông',color:'#22d48a',items:['Nền XANH LÁ hoặc XANH LAM','Ý nghĩa: THÔNG TIN hướng dẫn, không bắt buộc','Nhớ nhanh: Chữ nhật = Thông tin','Biển cao tốc: nền xanh lam']},
+    ],
+    after:[
+      {insight:'<strong>Chiến lược 10-biển:</strong> Mỗi ngày học 10–15 biển cùng loại. Không học tất cả một lúc. Dùng flashcard: mặt trước là hình biển, mặt sau là ý nghĩa.',cls:''},
+      {insight:'<strong>Bẫy phổ biến Chương V:</strong> Biển "cấm ô tô" vs "cấm ô tô tải có trọng tải nhất định". Chú ý số viết trong biển, không chỉ nhìn hình tổng thể.',cls:'amber'}
+    ]
+  },
+  {
+    id:'tip-06',title:'Sa hình: 3 nguyên tắc gốc (Chương VI)',icon:'🗺',badge:'115 câu · Điểm liệt',color:'#20c8e0',
+    type:'rules',
+    intro:'Không thể học thuộc 115 sa hình riêng lẻ. Nắm 3 nguyên tắc gốc để giải MỌI tình huống:',
+    cards:[
+      {title:'Nguyên tắc 1 — Xe ưu tiên',color:'#f04060',items:['Thứ tự: Cứu thương/Cứu hỏa/Công an KẨN CẤP → Đường ưu tiên → Bên phải → Còn lại','Xe ưu tiên LUÔN đi trước tất cả','Nhận diện: đèn ưu tiên + còi ưu tiên']},
+      {title:'Nguyên tắc 2 — Nhường đường bên PHẢI',color:'#22d48a',items:['Ngã tư không có biển/đèn: xe từ bên PHẢI đi trước','Xe từ bên TRÁI phải nhường','Khi không chắc: hỏi "xe đến từ bên phải của mình là xe nào?"']},
+      {title:'Nguyên tắc 3 — Đường chính > Đường phụ',color:'#3d8ef8',items:['Có biển "Nhường đường" hoặc "Dừng lại": xe đó nhường TẤT CẢ','Đường có biển "Đường ưu tiên": đi trước xe từ đường phụ','Ngã tư đường lớn + đường nhỏ: đường lớn ưu tiên']},
+    ],
+    after:[
+      {insight:'<strong>Phân bố câu Ch.VI:</strong> 19 câu thứ tự xe · 10 câu xe nào nhường · ~80 câu tình huống xử lý. Áp dụng đúng 3 nguyên tắc → giải được hơn 80% chương này.',cls:'green'},
+      {insight:'<strong>Đây là chương có nhiều câu điểm liệt nhất.</strong> Sai bất kỳ 1 trong 60 câu điểm liệt → TRƯỢT dù đúng tất cả câu còn lại.',cls:'red'}
+    ]
+  },
+  {
+    id:'tip-07',title:'Kỹ thuật lái xe: Logic an toàn nhất (Chương III)',icon:'⛰',badge:'58 câu',color:'#22d48a',
+    type:'rules',
+    intro:'Đáp án đúng trong Chương III luôn là thao tác AN TOÀN NHẤT và ĐẦY ĐỦ NHẤT:',
+    cards:[
+      {title:'Lên / Xuống dốc',color:'#22d48a',items:['Lên dốc: về số thấp từ chân dốc, sát lề phải ở đỉnh','Xuống dốc: số thấp + phanh chân đều đặn, KHÔNG ngắt côn','Muốn dừng trên dốc: phanh SỚM và MẠNH hơn đường bằng','Xe hư trên dốc: chèn bánh + đánh lái vào lề']},
+      {title:'Đường trơn / Ngập nước',color:'#3d8ef8',items:['Ngập nước: số thấp, giữ đều ga, KHÔNG dừng giữa chừng','Đường trơn: giảm tốc sớm, tránh phanh gấp/tăng ga đột ngột','Khi bị trượt bánh: đừng phanh gấp, đánh lái về chiều trượt']},
+      {title:'Ban đêm & Gặp xe ngược chiều',color:'#f0a030',items:['Gặp xe ngược chiều: chuyển đèn pha → đèn cốt (gần)','Không nhìn thẳng vào đèn xe đối diện → nhìn lề phải','22h–05h: chỉ dùng đèn để báo hiệu (không bấm còi)']},
+      {title:'Hộp số cơ khí',color:'#a060f8',items:['Khởi hành: côn → số 1 → nhả phanh tay → nhả côn + ga từ từ','Tăng/giảm số: tuần tự (1→2→3), KHÔNG nhảy cóc','KHÔNG nhìn xuống hộp số khi sang số']},
+    ],
+    after:[]
+  },
+  {
+    id:'tip-08',title:'5 Bẫy đề hay gặp nhất',icon:'🎣',badge:'Cần cẩn thận',color:'#f04060',
+    type:'text',
+    content:[
+      {html:'<div class="rule-cards"><div class="rule-card" style="border-top-color:#f04060"><div class="rule-card-title">Bẫy 1: Định nghĩa thiếu một chi tiết</div><ul><li>Câu "được hiểu như thế nào là đúng?" → 2 đáp án trông giống nhau nhưng 1 thiếu chi tiết quan trọng</li><li>Đọc kỹ từng từ: "chỉ", "trừ", "tất cả", "trong một khoảng thời gian"</li></ul></div><div class="rule-card" style="border-top-color:#f04060"><div class="rule-card-title">Bẫy 2: Số chỗ ngồi xe buýt</div><ul><li>Phân biệt: ">16 chỗ" · ">28 chỗ" · ">29 chỗ" (không kể chỗ lái)</li><li>Sai 1 con số = sai cả câu → học thuộc: <strong>16 → 28 → 29</strong></li></ul></div><div class="rule-card" style="border-top-color:#f04060"><div class="rule-card-title">Bẫy 3: Câu hỏi phủ định</div><ul><li>Đọc chậm: câu hỏi đang hỏi cái ĐƯỢC phép hay cái BỊ cấm?</li><li>"Không được phép" ≠ "Được phép"</li></ul></div><div class="rule-card" style="border-top-color:#f04060"><div class="rule-card-title">Bẫy 4: Biển báo gần giống nhau</div><ul><li>Cấm ô tô vs cấm ô tô tải → chú ý hình vẽ bên trong</li><li>Tốc độ 50 vs 60 → đọc số rõ ràng</li></ul></div><div class="rule-card" style="border-top-color:#f04060"><div class="rule-card-title">Bẫy 5: "Ý 1 và ý 2" ≠ "Cả hai ý trên"</div><ul><li>Khi có 3+ ý: "Ý 1 và ý 2" không bao gồm ý 3</li><li>"Cả ba ý trên" khác với "Ý 1 và ý 2"</li></ul></div></div>'},
+      {insight:'<strong>Chiến thuật khi không chắc:</strong> (1) Đọc câu hỏi trước khi nhìn đáp án. (2) Gạch chân từ khóa. (3) Loại trừ đáp án sai rõ ràng. (4) Không thay đổi đáp án nếu không có lý do rõ ràng.',cls:'amber'}
+    ]
+  },
+  {
+    id:'tip-09',title:'Lộ trình ôn 7–10 ngày',icon:'📅',badge:'Kế hoạch',color:'#a060f8',
+    type:'table',
+    intro:'',
+    headers:['Ngày','Nội dung','Mục tiêu'],
+    rows:[
+      ['1–2','Chương I — Quy định chung (180 câu)','Nhận dạng dạng câu, thuộc các con số quan trọng'],
+      ['3–4','Chương V — Biển báo (185 câu)','Học 10–15 biển/ngày theo nhóm màu'],
+      ['5','Chương III + IV — Kỹ thuật + Cấu tạo (95 câu)','Hiểu logic, chọn thao tác an toàn nhất'],
+      ['6–7','Chương VI — Sa hình (115 câu)','Luyện 3 nguyên tắc gốc, phân tích từng câu sai'],
+      ['8–9','Thi thử toàn bộ, lặp lại 5–10 đề','Mục tiêu: ≥45/50 câu liên tục 3 đề'],
+      ['10','Ôn lại câu đã sai nhiều lần','Nghỉ ngơi đủ giấc trước ngày thi'],
+    ],
+    after:[{insight:'Dùng tool <strong>Thực hành thi</strong> ở menu bên trái để luyện bộ đề ngẫu nhiên. Chọn "Hiển thị đáp án ngay sau mỗi câu" khi mới học, chuyển sang "Sau khi nộp bài" khi ôn cuối.',cls:''}]
+  }
+];
+
+function buildTipsPage(){
+  const allTips=[...BUILTIN_TIPS,...CUSTOM_TIPS];
+  const toc=allTips.map(t=>`<div class="toc-item" onclick="scrollToTip('${t.id}')">${t.icon} ${t.title.substring(0,28)}</div>`).join('');
+  document.getElementById('tips-toc-list').innerHTML=toc;
+  document.getElementById('tips-content').innerHTML=allTips.map(t=>renderTipSection(t)).join('');
+  // Open first section
+  document.querySelector('.tip-section')?.classList.add('open');
+}
+
+function renderTipSection(t){
+  let body='';
+  if(t.type==='table'){
+    body+=(t.intro?`<p style="font-size:13px;color:var(--tx2);margin-bottom:10px">${t.intro}</p>`:'');
+    if(t.headers&&t.rows){
+      body+=`<div class="tbl-wrap" style="margin-bottom:0"><table class="tip-table"><thead><tr>${t.headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${
+        t.rows.map(r=>`<tr>${r.map((c,i)=>`<td>${i===r.length-1?`<strong>${c}</strong>`:c}</td>`).join('')}</tr>`).join('')
+      }</tbody></table></div>`;
+    }
+  } else if(t.type==='speeds'){
+    body+=(t.intro?`<p style="font-size:13px;color:var(--tx2);margin-bottom:10px">${t.intro}</p>`:'');
+    body+=`<div class="speed-grid">${(t.items||[]).map(s=>`<div class="speed-card"><div class="speed-val">${s.val}</div><div class="speed-unit">${s.unit}</div><div class="speed-desc">${s.desc}</div></div>`).join('')}</div>`;
+  } else if(t.type==='rules'){
+    body+=(t.intro?`<p style="font-size:13px;color:var(--tx2);margin-bottom:10px">${t.intro}</p>`:'');
+    body+=`<div class="rule-cards">${(t.cards||[]).map(c=>`<div class="rule-card" style="border-top-color:${c.color}"><div class="rule-card-title">${c.title}</div><ul>${c.items.map(i=>`<li>${i}</li>`).join('')}</ul></div>`).join('')}</div>`;
+  } else if(t.type==='text'){
+    (t.content||[]).forEach(c=>{
+      if(c.text) body+=`<p style="font-size:13px;color:var(--tx2);margin-bottom:8px">${c.text}</p>`;
+      if(c.html) body+=c.html;
+      if(c.insight) body+=`<div class="insight ${c.cls||''}" style="margin-top:8px"><div class="insight-icon">💡</div><div class="insight-body">${c.insight}</div></div>`;
+    });
+  }
+  (t.after||[]).forEach(a=>{
+    if(a.insight) body+=`<div class="insight ${a.cls||''}" style="margin-top:10px"><div class="insight-icon">💡</div><div class="insight-body">${a.insight}</div></div>`;
+  });
+  return `<div class="tip-section" id="${t.id}">
+    <div class="tip-section-header" onclick="toggleTip('${t.id}')">
+      <span style="font-size:18px">${t.icon}</span>
+      <div class="tip-section-title">${t.title}</div>
+      ${t.badge?`<span class="tip-badge" style="border-color:${t.color};color:${t.color}">${t.badge}</span>`:''}
+      <span class="tip-chevron">▶</span>
+    </div>
+    <div class="tip-body">${body}</div>
+  </div>`;
+}
+
+function toggleTip(id){document.getElementById(id)?.classList.toggle('open')}
+function scrollToTip(id){
+  const el=document.getElementById(id);
+  if(el){el.classList.add('open');el.scrollIntoView({behavior:'smooth',block:'start'});}
+}
+
+// ═══════════════════════════════════════════════════════════
+// BROWSE
+// ═══════════════════════════════════════════════════════════
+function doBrowse(){
+  const s=document.getElementById('srch').value.toLowerCase();
+  const ch=document.getElementById('f-chap').value;
+  const fa=document.getElementById('f-ans').value;
+  const fi=document.getElementById('f-img').value;
+  const dl = document.getElementById('f-dl').value;
+	if(dl==='yes' && !DIEM_LIET_IDS.has(q.id)) return false;
+	if(dl==='no'  &&  DIEM_LIET_IDS.has(q.id)) return false;
+  BROWSE=DB.filter(q=>{
+    if(s&&![q.question,...q.options.map(o=>o.text||'')].join(' ').toLowerCase().includes(s))return false;
+    if(ch){const c=CHAPTERS[+ch-1];if(!c||q.id<c.range[0]||q.id>c.range[1])return false;}
+    if(fa==='4'){if(!q.correct||q.correct<4)return false;}
+    else if(fa){if(q.correct!==+fa)return false;}
+    if(fi==='yes'&&!q.image)return false;
+    if(fi==='no'&&q.image)return false;
+    return true;
+  });
+  BP=1;renderBrowse();
+}
+
+function renderBrowse(){
+  const total=BROWSE.length,pages=Math.ceil(total/BPS);
+  const pg=BROWSE.slice((BP-1)*BPS,BP*BPS);
+  document.getElementById('browse-cnt').innerHTML=`<span style="color:var(--tx)">${total}</span> câu · trang <span style="color:var(--blue)">${BP}</span>/${pages}`;
+  document.getElementById('browse-list').innerHTML=pg.map(q=>qCard(q)).join('')||'<div style="padding:30px;text-align:center;color:var(--tx3)">Không tìm thấy câu hỏi phù hợp</div>';
+  renderPager('browse-pager',BP,pages,(p)=>{BP=p;renderBrowse();document.getElementById('browse-list').scrollIntoView({behavior:'smooth'});});
+}
+
+function qCard(q,showImg=true){
+  const ch=CHAPTERS.find(c=>q.id>=c.range[0]&&q.id<=c.range[1])||{short:'?',color:'#555'};
+  const imgHtml = showImg && q.image
+  ? `
+  <div class="q-img">
+      <img 
+        src="${q.image}" 
+        alt="question image"
+        loading="lazy"
+        style="max-width:100%;height:auto"
+        onerror="this.style.display='none'"
+      />
+  </div>
+  `
+  : '';
+  return `<div class="q-card">
+    <div class="q-meta">
+      <span class="tag tag-blue" style="border-color:${ch.color};color:${ch.color}">#${q.id}</span>
+      <span style="color:${ch.color}">${ch.short}</span>
+      ${q.image?'<span class="tag tag-blue" style="font-size:10px">🖼 ảnh</span>':''}
+      ${q.correct?`<span class="tag tag-green">ĐA: ${q.correct}</span>`:'<span class="tag tag-red">Chưa có ĐA</span>'}
+    </div>
+    <div class="q-text">${q.question}</div>
+    ${imgHtml}
+    <div class="q-opts">${q.options.map(o=>`<div class="q-opt ${o.num===q.correct?'correct':''}"><span class="q-opt-num">${o.num}.</span><span>${o.text||''}</span>${o.num===q.correct?'<span style="margin-left:auto">✓</span>':''}</div>`).join('')}</div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// EXAM ENGINE
+// ═══════════════════════════════════════════════════════════
+function startExam(){
+  if(!DB.length){alert('Vui lòng tải dữ liệu trước!');return;}
+  const type=document.getElementById('exam-type').value;
+  const count=+document.getElementById('exam-count').value||50;
+  const time=+document.getElementById('exam-time').value;
+  const mode=document.getElementById('exam-mode').value;
+  const shuffle=document.getElementById('exam-shuffle').checked;
+
+  let pool=[];
+  if(type==='random') pool=[...DB];
+  else if(type==='full') pool=[...DB];
+  else if(type==='custom') pool=[...DB];
+  else if(type==='diemliet') pool = DB.filter(q => DIEM_LIET_IDS.has(q.id));
+  else {
+    const ch=CHAPTERS.find(c=>'ch'+c.id===type);
+    if(ch) pool=DB.filter(q=>q.id>=ch.range[0]&&q.id<=ch.range[1]);
+  }
+
+  if(shuffle) pool.sort(()=>Math.random()-.5);
+  const n=(type==='full')?pool.length:Math.min(count,pool.length);
+  ES.qs=pool.slice(0,n);
+  ES.answers={};ES.current=0;ES.elapsed=0;ES.timeLimit=time*60;ES.mode=mode;ES.started=true;ES.paused=false;
+
+  document.getElementById('exam-setup').style.display='none';
+  document.getElementById('exam-result').style.display='none';
+  document.getElementById('exam-review').style.display='none';
+  document.getElementById('exam-screen').style.display='block';
+
+  buildQNav();renderExamQ();
+  if(time>0) startTimer();
+  else document.getElementById('exam-timer').textContent='∞';
+}
+
+function startTimer(){
+  if(ES.timer) clearInterval(ES.timer);
+  const total=ES.timeLimit;
+  ES.timer=setInterval(()=>{
+    if(ES.paused)return;
+    ES.elapsed++;
+    const rem=total-ES.elapsed;
+    if(rem<=0){clearInterval(ES.timer);submitExam();return;}
+    const m=Math.floor(rem/60),s=rem%60;
+    const el=document.getElementById('exam-timer');
+    el.textContent=`${m}:${s<10?'0':''}${s}`;
+    el.className='exam-timer'+(rem<120?' danger':rem<300?' warn':'');
+  },1000);
+}
+
+function renderExamQ(){
+  const q=ES.qs[ES.current];
+  if(!q)return;
+  const n=ES.current,total=ES.qs.length;
+  const pct=((n)/total*100).toFixed(1);
+  document.getElementById('exam-prog-txt').textContent=`Câu ${n+1} / ${total}`;
+  document.getElementById('exam-prog-fill').style.width=pct+'%';
+  document.getElementById('exam-q-num').textContent=`Câu ${n+1} · #${q.id}`;
+  document.getElementById('exam-q-text').textContent=q.question;
+
+  // Image
+  const iw=document.getElementById('exam-q-img-wrap');
+  if(q.image){
+    iw.innerHTML=`<div class="exam-q-img-ph">🖼 <span style="font-family:var(--mono);font-size:11px">${q.image}</span><br><span style="font-size:10px;opacity:.6">Đặt ảnh vào thư mục images/</span></div>`;
+    // Try load actual image
+    const img=new Image();
+    img.onload=()=>{iw.innerHTML=`<img src="${q.image}" class="exam-q-img" alt="Hình minh họa">`};
+    img.src=q.image;
+  } else { iw.innerHTML=''; }
+
+  // Options
+  const sel=ES.answers[ES.current];
+  const revealed=ES.mode==='instant'&&sel!=null;
+  document.getElementById('exam-opts').innerHTML=q.options.map(o=>{
+    let cls='';
+    if(revealed){
+      if(o.num===q.correct) cls='correct';
+      else if(o.num===sel) cls='wrong';
+    } else if(o.num===sel) cls='selected';
+    return `<div class="exam-opt ${cls}" onclick="selectAns(${o.num})">
+      <div class="opt-num">${o.num}</div>
+      <div>${o.text||''}</div>
+    </div>`;
+  }).join('');
+
+  // Explanation (instant mode)
+  const expEl=document.getElementById('exam-explanation');
+  if(revealed){
+    const co=q.options.find(o=>o.num===q.correct);
+    expEl.style.display='block';
+    expEl.innerHTML=`<div class="insight ${sel===q.correct?'green':'red'}">
+      <div class="insight-icon">${sel===q.correct?'✅':'❌'}</div>
+      <div class="insight-body">${sel===q.correct?'Chính xác!':'<strong>Sai!</strong>'} Đáp án đúng: <strong>${q.correct}. ${co?.text||''}</strong></div>
+    </div>`;
+  } else { expEl.style.display='none'; }
+
+  // Nav buttons
+  document.getElementById('btn-prev').disabled=n===0;
+  document.getElementById('btn-next').textContent=n===total-1?'Nộp bài ✅':'Câu tiếp →';
+  document.getElementById('btn-next').onclick=n===total-1?submitExam:nextQ;
+
+  // Update nav grid
+  document.querySelectorAll('.q-dot').forEach((d,i)=>{
+    d.className='q-dot'+(i===n?' current':ES.answers[i]!=null?' answered':'');
+  });
+}
+
+function selectAns(num){
+  if(ES.answers[ES.current]!=null&&ES.mode==='instant')return;
+  ES.answers[ES.current]=num;
+  renderExamQ();
+  document.querySelectorAll('.q-dot')[ES.current]?.classList.add('answered');
+}
+
+function prevQ(){if(ES.current>0){ES.current--;renderExamQ();}}
+function nextQ(){if(ES.current<ES.qs.length-1){ES.current++;renderExamQ();}else submitExam();}
+
+function goToQ(i){ES.current=i;renderExamQ();}
+
+function buildQNav(){
+  document.getElementById('q-nav-grid').innerHTML=ES.qs.map((q,i)=>
+    <!-- `<div class="q-dot" onclick="goToQ(${i})" title="#${q.id}">${i+1}</div>` -->
+	`<div class="q-dot${DIEM_LIET_IDS.has(q.id)?' q-dot-dl':''}" onclick="goToQ(${i})" title="#${q.id}${DIEM_LIET_IDS.has(q.id)?' 🔴':''}">${i+1}</div>`
+  ).join('');
+}
+
+function submitExam(){
+  if(ES.timer){clearInterval(ES.timer);ES.timer=null;}
+  showResult();
+}
+
+function showResult(){
+  document.getElementById('exam-screen').style.display='none';
+  document.getElementById('exam-review').style.display='none';
+  document.getElementById('exam-result').style.display='block';
+
+  const correct=ES.qs.filter((q,i)=>ES.answers[i]===q.correct).length;
+  const wrong=ES.qs.filter((q,i)=>ES.answers[i]!=null&&ES.answers[i]!==q.correct).length;
+  const blank=ES.qs.filter((q,i)=>ES.answers[i]==null).length;
+  const total=ES.qs.length;
+  const pct=Math.round(correct/total*100);
+  const pass=pct>=80;
+
+  document.getElementById('result-score-txt').className='result-num '+(pass?'result-pass':'result-fail');
+  document.getElementById('result-score-txt').textContent=`${correct}/${total}`;
+  document.getElementById('result-label').textContent=`${pct}% · ${pass?'✅ ĐẠT':'❌ CHƯA ĐẠT'} · Cần 80% để đậu`;
+
+  document.getElementById('result-stats').innerHTML=[
+    {v:correct,l:'Câu đúng',c:'c-green'},{v:wrong,l:'Câu sai',c:'c-red'},
+    {v:blank,l:'Bỏ trống',c:'c-amber'},{v:pct+'%',l:'Điểm số',c:pass?'c-green':'c-red'},
+    {v:fmtTime(ES.elapsed),l:'Thời gian',c:'c-blue'},{v:total,l:'Tổng câu',c:'c-cyan'},
+  ].map(s=>`<div class="stat-card ${s.c}"><div class="stat-val">${s.v}</div><div class="stat-lbl">${s.l}</div></div>`).join('');
+
+  // Wrong list summary
+  const wrongQs=ES.qs.filter((q,i)=>ES.answers[i]!==q.correct).slice(0,10);
+  document.getElementById('result-wrong-list').innerHTML=wrongQs.length?`
+    <div class="box"><div class="box-title">Câu trả lời sai / bỏ (${ES.qs.filter((q,i)=>ES.answers[i]!==q.correct).length} câu, hiển thị 10 đầu)</div>
+    ${wrongQs.map((q,idx)=>{
+      const i=ES.qs.indexOf(q);
+      const sel=ES.answers[i];
+      const co=q.options.find(o=>o.num===q.correct);
+      return `<div style="padding:10px 0;border-bottom:1px solid var(--bd);font-size:12px">
+        <div style="color:var(--tx);margin-bottom:4px"><span class="tag tag-red">#${q.id}</span> ${q.question.substring(0,80)}...</div>
+        <div style="color:var(--tx2)">Bạn chọn: <span style="color:${sel?'var(--red)':'var(--amber)'}">${sel?sel+'. '+(q.options.find(o=>o.num===sel)?.text||''):'(bỏ trống)'}</span></div>
+        <div style="color:var(--green)">Đáp án đúng: ${q.correct}. ${co?.text||''}</div>
+      </div>`;
+    }).join('')}
+    </div>`:'';
+
+  // Save history
+  const hist=JSON.parse(localStorage.getItem('gplx_history')||'[]');
+  hist.unshift({date:new Date().toLocaleString('vi'),correct,total,pct,elapsed:ES.elapsed});
+  localStorage.setItem('gplx_history',JSON.stringify(hist.slice(0,20)));
+}
+
+function reviewExam(){
+  document.getElementById('exam-result').style.display='none';
+  document.getElementById('exam-review').style.display='block';
+  document.getElementById('review-list').innerHTML=ES.qs.map((q,i)=>{
+    const sel=ES.answers[i];
+    const ok=sel===q.correct;
+    const co=q.options.find(o=>o.num===q.correct);
+    return `<div class="q-card" style="border-color:${ok?'rgba(34,212,138,.3)':'rgba(240,64,96,.3)'}">
+      <div class="q-meta">
+        <span class="tag" style="border-color:${ok?'var(--green)':'var(--red)'};color:${ok?'var(--green)':'var(--red)'}">${ok?'✓ Đúng':'✗ Sai'}</span>
+        <span class="tag tag-blue">#${q.id}</span>
+        ${sel==null?'<span class="tag tag-amber">Bỏ trống</span>':''}
+      </div>
+      <div class="q-text">${q.question}</div>
+      ${q.image?`<div class="q-img-placeholder"><img 
+        src="${q.image}" 
+        alt="question image"
+        loading="lazy"
+        style="max-width:100%;height:auto"
+        onerror="this.style.display='none'"
+      /></div>`:''}
+      <div class="q-opts">${q.options.map(o=>{
+        let cls='';
+        if(o.num===q.correct)cls='correct';
+        else if(o.num===sel)cls='wrong';
+        return `<div class="q-opt ${cls}"><span class="q-opt-num">${o.num}.</span><span>${o.text||''}</span>
+          ${o.num===q.correct?'<span style="margin-left:auto">✓ ĐÁP ÁN ĐÚNG</span>':''}
+          ${o.num===sel&&sel!==q.correct?'<span style="margin-left:auto;color:var(--red)">← Bạn chọn</span>':''}
+        </div>`;
+      }).join('')}</div>
+    </div>`;
+  }).join('');
+}
+
+function restartExam(){
+  document.getElementById('exam-result').style.display='none';
+  document.getElementById('exam-setup').style.display='block';
+  renderHistory();
+}
+
+function exitExam(){
+  if(ES.timer){clearInterval(ES.timer);ES.timer=null;}
+  ES.started=false;
+  document.getElementById('exam-screen').style.display='none';
+  document.getElementById('exam-result').style.display='none';
+  document.getElementById('exam-review').style.display='none';
+  document.getElementById('exam-setup').style.display='block';
+  renderHistory();
+}
+
+function pauseExam(){
+  ES.paused=!ES.paused;
+  document.getElementById('btn-pause').textContent=ES.paused?'▶ Tiếp tục':'⏸ Tạm dừng';
+}
+
+function renderHistory(){
+  const hist=JSON.parse(localStorage.getItem('gplx_history')||'[]');
+  const box=document.getElementById('exam-history-box');
+  if(!hist.length){box.style.display='none';return;}
+  box.style.display='block';
+  document.getElementById('exam-history').innerHTML=`<div class="tbl-wrap"><table><thead><tr><th>Thời gian</th><th>Kết quả</th><th>Điểm</th><th>Thời lượng</th></tr></thead><tbody>${
+    hist.slice(0,5).map(h=>`<tr>
+      <td>${h.date}</td>
+      <td class="${h.pct>=80?'ok':'err'}">${h.correct}/${h.total}</td>
+      <td class="${h.pct>=80?'ok':'err'}">${h.pct}%</td>
+      <td>${fmtTime(h.elapsed)}</td>
+    </tr>`).join('')
+  }</tbody></table></div>`;
+}
+function renderDiemLiet() {
+  if (!DB.length) {
+    document.getElementById('dl-list').innerHTML =
+      '<div style="padding:30px;text-align:center;color:var(--tx3)">Chưa tải dữ liệu</div>';
+    return;
+  }
+  const srch = (document.getElementById('dl-srch')?.value || '').toLowerCase();
+  const qs = DB.filter(q => DIEM_LIET_IDS.has(q.id) &&
+    (!srch || [q.question, ...q.options.map(o => o.text||'')].join(' ').toLowerCase().includes(srch))
+  );
+
+  // Update stats
+  document.getElementById('dl-stat-loaded').querySelector('.stat-val').textContent = DB.length;
+  document.getElementById('dl-stat-ch1').textContent =
+    DB.filter(q => DIEM_LIET_IDS.has(q.id) && q.id <= 180).length;
+  document.getElementById('dl-stat-other').textContent =
+    DB.filter(q => DIEM_LIET_IDS.has(q.id) && q.id > 180).length;
+
+  document.getElementById('dl-list').innerHTML = qs.map(q => qCard(q)).join('') ||
+    '<div style="padding:30px;text-align:center;color:var(--tx3)">Không tìm thấy</div>';
+}
+// ═══════════════════════════════════════════════════════════
+// ANALYZE
+// ═══════════════════════════════════════════════════════════
+function buildAnalyze(){
+  if(!DB.length)return;
+  const total=DB.length, withAns=DB.filter(q=>q.correct).length;
+  const ad={};DB.forEach(q=>{if(q.correct)ad[q.correct]=(ad[q.correct]||0)+1;});
+  const maxA=Math.max(...Object.values(ad));
+
+  document.getElementById('analyze-stats').innerHTML=[
+    {v:total,l:'Tổng câu',c:'c-blue'},{v:withAns,l:'Có đáp án',c:'c-green'},
+    {v:DB.filter(q=>q.image).length,l:'Có hình ảnh',c:'c-cyan'},
+    {v:DB.filter(q=>!q.correct).length,l:'Thiếu ĐA',c:'c-red'},
+  ].map(s=>`<div class="stat-card ${s.c}"><div class="stat-val">${s.v}</div><div class="stat-lbl">${s.l}</div></div>`).join('');
+
+  document.getElementById('analyze-ans-dist').innerHTML=`<div class="box-title">Đáp án đúng theo vị trí</div>`+
+    Object.entries(ad).sort((a,b)=>+a[0]-+b[0]).map(([k,v])=>`
+    <div class="bar-row"><div class="bar-lbl">Đáp án ${k}</div>
+    <div class="bar-track"><div class="bar-fill" style="width:${v/maxA*100}%;background:${ANS_COLORS[k]||'#888'}">${v}</div></div>
+    <div class="bar-num">${v} (${(v/withAns*100).toFixed(0)}%)</div></div>`).join('');
+
+  const maxC=Math.max(...CHAPTERS.map(c=>DB.filter(q=>q.id>=c.range[0]&&q.id<=c.range[1]).length));
+  document.getElementById('analyze-ch-dist').innerHTML=`<div class="box-title">Theo chương</div>`+
+    CHAPTERS.map(ch=>{
+      const cnt=DB.filter(q=>q.id>=ch.range[0]&&q.id<=ch.range[1]).length;
+      return `<div class="bar-row"><div class="bar-lbl" title="${ch.name}">${ch.short}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${cnt/maxC*100}%;background:${ch.color}">${cnt}</div></div>
+        <div class="bar-num">${cnt}</div></div>`;
+    }).join('');
+
+  // Ca y analysis
+  const caTypes=[
+    {label:'Cả ba ý trên',re:/cả ba ý/i},{label:'Cả hai ý trên',re:/cả hai ý/i},
+  ];
+  const caHtml=caTypes.map(ct=>{
+    const total2=DB.filter(q=>q.options.some(o=>ct.re.test(o.text))).length;
+    const correct2=DB.filter(q=>q.correct&&q.options.find(o=>o.num===q.correct&&ct.re.test(o.text))).length;
+    const pct=total2?Math.round(correct2/total2*100):0;
+    return `<div class="bar-row"><div class="bar-lbl" style="width:130px">"${ct.label}"</div>
+      <div class="bar-track" style="height:22px"><div class="bar-fill" style="width:${pct}%;background:var(--green);font-size:11px">${pct}%</div></div>
+      <div class="bar-num">${correct2}/${total2}</div></div>`;
+  }).join('');
+  document.getElementById('analyze-ca-y').innerHTML=caHtml;
+
+  // Keywords
+  const stop=new Set(['là','của','và','các','có','được','không','trong','khi','để','cho','với','trên','theo','tham','giao','đường','bộ','xe','người','lái','điều','khiển','phương','tiện','thông','phải','về','từ','đến','một','hoặc','nào','như','thế','đúng','dưới','sau','đây','nếu','bị','phép','loại','tại','này','đó','thì']);
+  const wc={};
+  DB.forEach(q=>{q.question.toLowerCase().replace(/[.,?!;:()]/g,' ').split(/\s+/).filter(w=>w.length>3&&!stop.has(w)).forEach(w=>wc[w]=(wc[w]||0)+1);});
+  const kws=Object.entries(wc).sort((a,b)=>b[1]-a[1]).slice(0,15);
+  const maxW=kws[0]?.[1]||1;
+  document.getElementById('analyze-keywords').innerHTML=kws.map(([w,c])=>{
+    const sz=10+Math.round(c/maxW*6);
+    return `<span style="font-size:${sz}px;color:var(--tx2);opacity:${.4+c/maxW*.6};background:var(--bg3);border:1px solid var(--bd);padding:3px 10px;border-radius:3px;cursor:pointer" onclick="document.getElementById('srch').value='${w}';doBrowse();switchTab('browse')" title="${c} câu">${w} <strong style="color:var(--blue)">${c}</strong></span>`;
+  }).join('');
+
+  // Longest
+  const longest=[...DB].sort((a,b)=>b.question.length-a.question.length).slice(0,8);
+  document.querySelector('#analyze-longest tbody').innerHTML=longest.map(q=>{
+    const ch=CHAPTERS.find(c=>q.id>=c.range[0]&&q.id<=c.range[1])||{short:'?',color:'#555'};
+    return `<tr><td class="num">#${q.id}</td><td><span class="tag" style="border-color:${ch.color};color:${ch.color}">${ch.short}</span></td><td class="num">${q.question.length}</td><td>${q.question.substring(0,90)}…</td></tr>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// HEATMAP
+// ═══════════════════════════════════════════════════════════
+function buildHeatmap(){
+  if(!DB.length)return;
+  const sorted=[...DB].sort((a,b)=>a.id-b.id);
+  const cols={1:'#3d8ef8',2:'#22d48a',3:'#f0a030',4:'#a060f8',5:'#20c8e0'};
+  const tt=document.getElementById('tooltip');
+
+  document.getElementById('heatmap').innerHTML=sorted.map(q=>{
+    const c=q.correct?cols[q.correct]||'#888':'#f04060';
+    return `<div class="hm-cell" style="background:${c}22;border:1px solid ${c}55"
+      data-id="${q.id}" data-c="${q.correct||'?'}" data-q="${q.question.replace(/"/g,'').substring(0,60)}"></div>`;
+  }).join('');
+
+  document.querySelectorAll('.hm-cell').forEach(cell=>{
+    cell.addEventListener('mousemove',e=>{
+      tt.innerHTML=`<strong>#${cell.dataset.id}</strong> · ĐA: ${cell.dataset.c}<br>${cell.dataset.q}…`;
+      tt.className='tooltip show';
+      tt.style.left=(e.clientX+12)+'px';tt.style.top=(e.clientY-40)+'px';
+    });
+    cell.addEventListener('mouseleave',()=>tt.className='tooltip');
+    cell.addEventListener('click',()=>{
+      document.getElementById('srch').value='';
+      document.getElementById('f-chap').value='';
+      document.getElementById('f-ans').value='';
+      document.getElementById('f-img').value='';
+      BROWSE=[...DB];BP=Math.ceil(DB.findIndex(q=>q.id===+cell.dataset.id)/BPS)+1||1;
+      renderBrowse();switchTab('browse');
+    });
+  });
+
+  document.getElementById('chap-legend').innerHTML=CHAPTERS.map(ch=>
+    `<div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--tx2)"><span style="width:12px;height:12px;border-radius:2px;background:${ch.color};display:inline-block"></span>${ch.short}: ${ch.range[0]}–${ch.range[1]}</div>`
+  ).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// TEMPLATE TIPS
+// ═══════════════════════════════════════════════════════════
+const TIP_TEMPLATE_SAMPLE=`{
+  "id": "my-tip-001",
+  "title": "Tên mẹo của bạn",
+  "icon": "🚀",
+  "badge": "Custom",
+  "color": "#3d8ef8",
+  "type": "text",
+  "content": [
+    { "text": "Đây là đoạn văn bình thường." },
+    { "insight": "Đây là <strong>insight box</strong> quan trọng.", "class": "green" },
+    { "html": "<ul><li>Item 1</li><li>Item 2</li></ul>" }
+  ],
+  "after": [
+    { "insight": "Tip cuối section.", "class": "amber" }
+  ]
+}`;
+
+function loadTipTemplate(){ document.getElementById('tip-editor').value=TIP_TEMPLATE_SAMPLE; }
+function previewTip(){
+  try{
+    const tip=JSON.parse(document.getElementById('tip-editor').value);
+    document.getElementById('tip-preview').innerHTML=renderTipSection(tip);
+    document.querySelector('#tip-preview .tip-section')?.classList.add('open');
+    document.querySelectorAll('#tip-preview .tip-section-header').forEach(h=>h.onclick=function(){this.parentElement.classList.toggle('open');});
+  }catch(e){document.getElementById('tip-preview').innerHTML=`<div style="color:var(--red);font-size:12px">JSON lỗi: ${e.message}</div>`;}
+}
+function addTip(){
+  try{
+    const tip=JSON.parse(document.getElementById('tip-editor').value);
+    if(!tip.id||!tip.title) throw new Error('Thiếu id hoặc title');
+    if(CUSTOM_TIPS.find(t=>t.id===tip.id)) CUSTOM_TIPS=CUSTOM_TIPS.filter(t=>t.id!==tip.id);
+    CUSTOM_TIPS.push(tip);
+    localStorage.setItem('gplx_custom_tips',JSON.stringify(CUSTOM_TIPS));
+    buildTipsPage();switchTab('tips');
+  }catch(e){alert('Lỗi: '+e.message);}
+}
+function resetCustomTips(){
+  if(confirm('Xóa tất cả tips tùy chỉnh?')){CUSTOM_TIPS=[];localStorage.removeItem('gplx_custom_tips');buildTipsPage();}
+}
+
+// ═══════════════════════════════════════════════════════════
+// EXPORT
+// ═══════════════════════════════════════════════════════════
+function doExport(fmt){
+  if(!DB.length){alert('Chưa có dữ liệu');return;}
+  if(fmt==='json'){
+    const j=JSON.stringify(DB,null,2);
+    dl('gplx_600_export.json',j,'application/json');
+  } else {
+    const rows=[['ID','Câu hỏi','Đáp án 1','Đáp án 2','Đáp án 3','Đáp án 4','Đáp án đúng','Có ảnh']];
+    DB.forEach(q=>{
+      const os=Array.from({length:4},(_,i)=>(q.options.find(o=>o.num===i+1)||{text:''}).text);
+      rows.push([q.id,q.question,...os,q.correct||'',q.image?'yes':'']);
+    });
+    const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+    dl('gplx_600.csv','\ufeff'+csv,'text/csv;charset=utf-8');
+  }
+}
+function dl(fn,content,type){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([content],{type}));
+  a.download=fn;a.click();
+}
+
+// ═══════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════
+function showLoader(t){document.getElementById('loader').classList.add('show');document.getElementById('loader-txt').textContent=t||'Đang xử lý...';}
+function hideLoader(){document.getElementById('loader').classList.remove('show');}
+function fmtTime(s){if(!s)return'0:00';const m=Math.floor(s/60);return`${m}:${(s%60)<10?'0':''}${s%60}`;}
+function renderPager(id,cur,total,cb){
+  if(total<=1){document.getElementById(id).innerHTML='';return;}
+  const btn=(lbl,p,dis,act)=>{const b=document.createElement('button');b.className='pg-btn'+(act?' active':'');b.textContent=lbl;b.disabled=dis;if(!dis&&!act)b.onclick=()=>cb(p);return b;};
+  const el=document.getElementById(id);el.innerHTML='';
+  el.appendChild(btn('←',cur-1,cur===1));
+  const r=cur<=3?[1,2,3,4,5,'…',total]:cur>=total-2?[1,'…',total-4,total-3,total-2,total-1,total]:[1,'…',cur-1,cur,cur+1,'…',total];
+  const seen=new Set();
+  r.forEach(p=>{
+    if(seen.has(p))return;seen.add(p);
+    if(p==='…'){const s=document.createElement('span');s.className='pg-info';s.textContent='…';el.appendChild(s);}
+    else el.appendChild(btn(p,p,false,p===cur));
+  });
+  el.appendChild(btn('→',cur+1,cur===total));
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+document.getElementById('exam-type').addEventListener('change',function(){
+  const custom=this.value==='custom';
+  document.getElementById('exam-count').disabled=this.value==='full';
+  if(this.value.startsWith('ch')){
+    const ch=CHAPTERS.find(c=>'ch'+c.id===this.value);
+    if(ch)document.getElementById('exam-count').value=Math.min(50,ch.range[1]-ch.range[0]+1);
+  }
+});
+
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  const bd = document.getElementById('sidebar-backdrop');
+  const open = sb.classList.toggle('open');
+  bd.classList.toggle('show', open);
+  document.getElementById('menu-toggle-btn').textContent = open ? '✕' : '☰';
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-backdrop').classList.remove('show');
+  document.getElementById('menu-toggle-btn').textContent = '☰';
+}
+
+loadTipTemplate();
+renderHistory();
+tryAutoLoad();
+</script>
+<script src="gplx_tips.js"></script>
+</body>
+</html>
