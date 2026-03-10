@@ -329,6 +329,12 @@ select.input{cursor:pointer}
 		<div class="nav-item" onclick="switchTab('analyze')"><span class="nav-icon">📊</span>Phân tích</div>
         <div class="nav-item" onclick="switchTab('heatmap')"><span class="nav-icon">🗺</span>Heatmap</div>
       </div>
+	  <div class="nav-grp">
+        <div class="nav-grp-label">Mô phỏng</div>
+        <div class="nav-item" onclick="switchTab('mophong')"><span class="nav-icon">📖</span>Học<span class="nav-badge" id="nb-browse">—</span></div>
+		<div class="nav-item" onclick="switchTab('mophong_luyen')"><span class="nav-icon">📊</span>Luyện tập</div>
+        <div class="nav-item" onclick="switchTab('mophong_thi')"><span class="nav-icon">🎯</span>Thi thử</div>
+      </div>
       <div class="nav-grp">
         <div class="nav-grp-label">Công cụ</div>
         <div class="nav-item" onclick="switchTab('template')"><span class="nav-icon">✏️</span>Template mẹo</div>
@@ -772,6 +778,15 @@ function switchTab(name){
   if(name==='heatmap')buildHeatmap();
   if(name==='diemliet')renderDiemLiet();
   if(name==='browse'){doBrowse();}
+  if(name==='mophong'){
+	location.href="gplx_tinh_huong.html?tab=learn";
+  }
+  if(name==='mophong_luyen'){
+	location.href="gplx_tinh_huong.html?tab=practice&sit=1";
+  }
+  if(name==='mophong_thi'){
+	location.href="gplx_tinh_huong.html?exam=start";
+  }
 }
 
 // ═══════════════════════════════════════════════════════════

@@ -1,0 +1,1662 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>120 Tình Huống Mô Phỏng — GPLX 2025</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0b0e17;--bg2:#11151f;--bg3:#181e2e;--bg4:#1e2640;
+  --bd:#1e2840;--bd2:#2a3860;
+  --tx:#d4e0f8;--tx2:#8099cc;--tx3:#4a5a8a;
+  --blue:#3d8ef8;--green:#22d48a;--red:#f04060;
+  --amber:#f0a030;--purple:#a060f8;--cyan:#20c8e0;
+  --danger:#ff3c5a;
+  --f:'Be Vietnam Pro',sans-serif;--mono:'JetBrains Mono',monospace;
+  --r:8px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--f);font-size:14px;line-height:1.6;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:var(--bg2)}::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:2px}
+
+/* ── LAYOUT ─────────────────────────────────────── */
+.app{display:flex;flex-direction:column;min-height:100vh}
+.topbar{height:52px;background:var(--bg2);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 16px;gap:12px;position:sticky;top:0;z-index:200;overflow:hidden}
+.logo{font-size:14px;font-weight:800;color:var(--blue);white-space:nowrap;flex-shrink:0}
+.logo span{color:var(--tx2);font-weight:500}
+.tb-tabs{display:flex;gap:4px;margin-left:auto;flex-shrink:0}
+.tb-tab{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:none;background:var(--bg3);color:var(--tx2);transition:all .15s}
+.tb-tab.active{background:var(--blue);color:#fff}
+.tb-tab:hover:not(.active){background:var(--bg4);color:var(--tx)}
+
+/* ── TABS CONTENT ────────────────────────────────── */
+.tab-panel{display:none;flex:1}.tab-panel.active{display:flex;flex-direction:column}
+
+/* ══════════════════════════════════════════════════
+   LEARN TAB
+══════════════════════════════════════════════════ */
+.learn-layout{display:grid;grid-template-columns:260px 1fr;flex:1;overflow:hidden;height:calc(100vh - 52px)}
+
+/* Sidebar */
+.learn-side{background:var(--bg2);border-right:1px solid var(--bd);overflow-y:auto;display:flex;flex-direction:column}
+.cat-header{padding:14px 16px 10px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tx3)}
+.cat-item{display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;transition:all .15s;border-left:2px solid transparent}
+.cat-item:hover{background:var(--bg3);color:var(--tx)}
+.cat-item.active{background:rgba(61,142,248,.1);border-left-color:var(--blue);color:var(--tx)}
+.cat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.cat-name{font-size:12px;flex:1}
+.cat-cnt{font-family:var(--mono);font-size:10px;color:var(--tx3)}
+.cat-sep{height:1px;background:var(--bd);margin:8px 12px}
+
+/* Grid */
+.learn-main{display:flex;flex-direction:column;overflow:hidden}
+.learn-toolbar{padding:12px 16px;border-bottom:1px solid var(--bd);display:flex;gap:8px;align-items:center;background:var(--bg2);flex-shrink:0}
+.srch-input{flex:1;background:var(--bg3);border:1px solid var(--bd2);border-radius:6px;padding:7px 12px;color:var(--tx);font-family:var(--f);font-size:12px;outline:none}
+.srch-input:focus{border-color:var(--blue)}
+.srch-input::placeholder{color:var(--tx3)}
+.view-btn{background:var(--bg3);border:1px solid var(--bd);color:var(--tx2);padding:7px 10px;border-radius:6px;cursor:pointer;font-size:14px}
+.view-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+.th-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;padding:16px;overflow-y:auto;flex:1}
+.th-card{border-radius:var(--r);overflow:hidden;cursor:pointer;background:var(--bg2);border:1px solid var(--bd);transition:all .2s;position:relative}
+.th-card:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.th-card.active{border-color:var(--blue);box-shadow:0 0 0 2px rgba(61,142,248,.3)}
+.th-thumb{width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--bg3);display:block}
+.th-thumb-ph{width:100%;aspect-ratio:16/9;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--tx3)}
+.th-info{padding:8px 10px}
+.th-num{font-family:var(--mono);font-size:10px;color:var(--blue);font-weight:600}
+.th-title{font-size:11px;color:var(--tx);line-height:1.4;margin-top:2px}
+.th-badge{position:absolute;top:6px;left:6px;font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;background:rgba(0,0,0,.7);color:#fff;backdrop-filter:blur(4px)}
+.th-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.4);opacity:0;transition:opacity .2s}
+.th-card:hover .th-play{opacity:1}
+.th-play-icon{width:36px;height:36px;border-radius:50%;background:rgba(61,142,248,.9);display:flex;align-items:center;justify-content:center;font-size:14px}
+
+/* Detail panel */
+.detail-panel{position:fixed;top:52px;right:0;bottom:0;width:480px;background:var(--bg2);border-left:1px solid var(--bd);z-index:100;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(.16,1,.3,1)}
+.detail-panel.open{transform:none}
+.dp-header{padding:14px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.dp-close{background:var(--bg3);border:1px solid var(--bd);color:var(--tx2);padding:5px 10px;border-radius:5px;cursor:pointer;font-size:12px}
+.dp-title{font-size:13px;font-weight:700;flex:1}
+.dp-body{flex:1;overflow-y:auto;padding:16px}
+
+/* Mini player in learn */
+.mini-player{position:relative;background:#000;border-radius:var(--r);overflow:hidden;margin-bottom:14px}
+.mini-player video{width:100%;display:block;max-height:240px}
+.mini-img{width:100%;border-radius:var(--r);margin-bottom:14px;border:1px solid var(--bd)}
+.mini-img img{width:100%;border-radius:var(--r);display:block}
+
+.tip-section{margin-bottom:14px}
+.tip-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--tx3);margin-bottom:8px}
+.tip-item{display:flex;gap:8px;padding:8px 10px;background:var(--bg3);border-radius:5px;border-left:2px solid var(--blue);margin-bottom:6px;font-size:12px;color:var(--tx2)}
+.tip-item.warn{border-left-color:var(--amber)}
+.tip-item.danger{border-left-color:var(--red)}
+.tip-icon{flex-shrink:0;font-size:13px;margin-top:1px}
+.hint-timing{background:var(--bg3);border:1px solid var(--bd2);border-radius:6px;padding:12px;margin-bottom:12px}
+.hint-bar{height:6px;background:var(--bg4);border-radius:3px;overflow:visible;position:relative;margin:8px 0}
+.hint-zone{position:absolute;height:100%;border-radius:3px;background:rgba(240,160,48,.4);border:1px solid var(--amber)}
+.hint-moment{position:absolute;width:3px;height:150%;top:-25%;border-radius:2px;background:var(--red);transform:translateX(-50%)}
+
+/* ══════════════════════════════════════════════════
+   PRACTICE TAB — full video player
+══════════════════════════════════════════════════ */
+.practice-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:20px 16px;overflow-y:auto;gap:16px}
+
+.player-card{width:100%;max-width:720px;background:var(--bg2);border:1px solid var(--bd);border-radius:12px;overflow:hidden}
+.player-video-wrap{position:relative;background:#000;aspect-ratio:16/9}
+.player-video-wrap video{width:100%;height:100%;display:block}
+
+/* Overlay states */
+.player-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;pointer-events:none}
+.player-overlay.clickable{pointer-events:all;cursor:pointer}
+.overlay-big-btn{width:64px;height:64px;border-radius:50%;background:rgba(61,142,248,.9);display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 0 0 8px rgba(61,142,248,.2)}
+
+/* Result flash */
+.result-flash{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);opacity:0;transition:opacity .2s;pointer-events:none}
+.result-flash.show{opacity:1}
+.result-flash-icon{font-size:64px;line-height:1;animation:popIn .3s ease}
+.result-flash-txt{font-size:18px;font-weight:800;letter-spacing:.05em}
+@keyframes popIn{from{transform:scale(.4)}to{transform:scale(1)}}
+
+/* Press hint */
+.press-hint{position:absolute;bottom:60px;left:50%;transform:translateX(-50%);background:rgba(240,160,48,.95);color:#000;font-size:13px;font-weight:800;padding:8px 18px;border-radius:20px;animation:pulseHint .8s ease-in-out infinite;display:none;white-space:nowrap;letter-spacing:.03em}
+@keyframes pulseHint{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.06)}}
+
+/* Progress */
+.player-progress{position:absolute;bottom:0;left:0;right:0;height:4px;background:rgba(255,255,255,.15)}
+.player-prog-fill{height:100%;background:var(--blue);transition:width .1s linear;width:0}
+.player-prog-danger{position:absolute;top:0;height:100%;background:rgba(240,160,48,.5);pointer-events:none}
+
+/* Controls bar */
+.player-controls{padding:14px 16px;border-top:1px solid var(--bd);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pc-left{display:flex;align-items:center;gap:8px}
+.pc-center{flex:1;display:flex;align-items:center;justify-content:center}
+.pc-right{display:flex;align-items:center;gap:8px}
+
+.ctrl-btn{background:var(--bg3);border:1px solid var(--bd);color:var(--tx2);padding:7px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all .15s;display:flex;align-items:center;gap:5px}
+.ctrl-btn:hover{color:var(--tx);border-color:var(--bd2)}
+.ctrl-btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.ctrl-btn.primary:hover{background:#5aa0ff}
+.ctrl-btn.danger{background:var(--danger);color:#fff;border-color:var(--danger)}
+
+/* DANGER BUTTON — main action */
+.danger-btn{width:100%;max-width:720px;height:64px;background:var(--danger);border:none;border-radius:10px;color:#fff;font-family:var(--f);font-size:16px;font-weight:800;cursor:pointer;letter-spacing:.05em;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .15s;box-shadow:0 4px 20px rgba(255,60,90,.3);user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.danger-btn:active{transform:scale(.97);background:#ff1a3c}
+.danger-btn.disabled{background:var(--bg3);color:var(--tx3);box-shadow:none;cursor:not-allowed}
+.danger-btn .kbd{background:rgba(255,255,255,.2);border-radius:4px;padding:2px 8px;font-family:var(--mono);font-size:12px}
+
+/* Side info */
+.player-info{width:100%;max-width:720px;background:var(--bg2);border:1px solid var(--bd);border-radius:12px;padding:16px}
+.pi-meta{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.pi-num{font-family:var(--mono);font-size:11px;color:var(--blue);font-weight:600}
+.pi-cat{font-size:11px;padding:2px 8px;border-radius:3px;border:1px solid;background:transparent}
+.pi-title{font-size:15px;font-weight:700;color:var(--tx);margin-bottom:10px}
+.pi-tips{display:flex;flex-direction:column;gap:5px}
+.pi-tip{display:flex;gap:8px;font-size:12px;color:var(--tx2);padding:7px 10px;background:var(--bg3);border-radius:5px;border-left:2px solid var(--blue)}
+.pi-tip.key{border-left-color:var(--amber);color:var(--tx)}
+
+/* Timeline hint viz */
+.timeline-hint{background:var(--bg3);border-radius:6px;padding:12px 14px;margin-bottom:10px}
+.tl-label{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;font-weight:600}
+.tl-bar{height:8px;background:var(--bg4);border-radius:4px;position:relative;overflow:hidden}
+.tl-safe{position:absolute;left:0;height:100%;background:rgba(34,212,138,.2);border-right:2px solid rgba(34,212,138,.5)}
+.tl-zone{position:absolute;height:100%;background:rgba(240,160,48,.35);border-left:2px solid var(--amber);border-right:2px solid var(--amber)}
+.tl-dot{position:absolute;width:12px;height:12px;border-radius:50%;background:var(--red);border:2px solid #fff;top:50%;transform:translate(-50%,-50%)}
+.tl-labels{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--tx3);margin-top:4px}
+
+/* Exam tab nav */
+.nav-btn-set{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center}
+
+/* ══════════════════════════════════════════════════
+   EXAM TAB
+══════════════════════════════════════════════════ */
+.exam-setup-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:24px 16px}
+.exam-setup-card{background:var(--bg2);border:1px solid var(--bd);border-radius:16px;padding:28px;width:100%;max-width:480px}
+.exam-setup-title{font-size:22px;font-weight:800;margin-bottom:6px;text-align:center}
+.exam-setup-sub{font-size:13px;color:var(--tx2);text-align:center;margin-bottom:24px}
+.setup-row{margin-bottom:14px}
+.setup-lbl{font-size:11px;color:var(--tx2);margin-bottom:6px;font-weight:600}
+.setup-sel{width:100%;background:var(--bg3);border:1px solid var(--bd2);border-radius:6px;padding:9px 12px;color:var(--tx);font-family:var(--f);font-size:13px;outline:none;cursor:pointer}
+.setup-sel:focus{border-color:var(--blue)}
+.start-exam-btn{width:100%;height:52px;background:var(--danger);border:none;border-radius:10px;color:#fff;font-family:var(--f);font-size:16px;font-weight:800;cursor:pointer;margin-top:6px;letter-spacing:.05em;transition:all .15s;box-shadow:0 4px 20px rgba(255,60,90,.25)}
+.start-exam-btn:hover{background:#ff1a3c;box-shadow:0 6px 28px rgba(255,60,90,.4)}
+.exam-desc{background:var(--bg3);border-radius:8px;padding:12px 14px;margin-bottom:20px;font-size:12px;color:var(--tx2);line-height:1.7}
+.exam-desc strong{color:var(--tx)}
+
+/* Exam screen */
+.exam-screen-wrap{flex:1;display:flex;flex-direction:column;align-items:center;overflow-y:auto;padding:12px 16px;gap:12px}
+.exam-hud{width:100%;max-width:720px;background:var(--bg2);border:1px solid var(--bd);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.hud-q{font-family:var(--mono);font-size:12px;color:var(--tx2)}
+.hud-q strong{color:var(--tx);font-size:15px}
+.hud-timer{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--cyan);min-width:50px}
+.hud-timer.warn{color:var(--amber)}.hud-timer.danger{color:var(--red);animation:blink .8s infinite}
+@keyframes blink{50%{opacity:.3}}
+.hud-score{font-family:var(--mono);font-size:12px;color:var(--tx2);margin-left:auto}
+.hud-score .ok{color:var(--green)}.hud-score .bad{color:var(--red)}
+.hud-prog{flex-basis:100%;height:4px;background:var(--bg3);border-radius:2px}
+.hud-prog-fill{height:100%;background:var(--blue);border-radius:2px;transition:width .4s}
+
+/* Exam video player (reuses practice styles) */
+.exam-video-card{width:100%;max-width:720px;background:#000;border-radius:12px;overflow:hidden;position:relative;aspect-ratio:16/9}
+.exam-video-card video{width:100%;height:100%;display:block}
+.exam-wait{position:absolute;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+.exam-wait-countdown{font-family:var(--mono);font-size:56px;font-weight:700;color:var(--blue);animation:popIn .3s ease}
+.exam-wait-txt{font-size:13px;color:var(--tx2)}
+
+/* Result tab */
+.result-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:24px 16px}
+.result-card{background:var(--bg2);border:1px solid var(--bd);border-radius:16px;padding:28px;width:100%;max-width:540px}
+.result-score-display{text-align:center;padding:24px 0 20px;border-bottom:1px solid var(--bd);margin-bottom:20px}
+.result-big{font-size:72px;font-weight:800;line-height:1}
+.result-big.pass{color:var(--green)}.result-big.fail{color:var(--red)}
+.result-verdict{font-size:16px;font-weight:700;margin-top:6px}
+.result-detail{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
+.rd-cell{background:var(--bg3);border-radius:8px;padding:12px;text-align:center}
+.rd-val{font-family:var(--mono);font-size:22px;font-weight:700}
+.rd-lbl{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.8px;margin-top:3px}
+.result-list{max-height:260px;overflow-y:auto}
+.rl-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:6px;margin-bottom:4px;background:var(--bg3);font-size:12px}
+.rl-icon{font-size:16px;flex-shrink:0}
+.rl-txt{flex:1;color:var(--tx2)}
+.rl-time{font-family:var(--mono);font-size:10px;color:var(--tx3)}
+.result-btns{display:flex;gap:10px;margin-top:16px}
+.result-btns .ctrl-btn{flex:1;justify-content:center;padding:10px}
+.btn-img-guide {
+  display:flex;align-items:center;gap:6px;
+  background:var(--bg3);border:1px solid var(--bd2);
+  color:var(--cyan);padding:7px 14px;border-radius:6px;
+  cursor:pointer;font-size:12px;font-weight:600;
+  transition:all .15s;
+}
+.btn-img-guide:hover{border-color:var(--cyan);background:rgba(32,200,224,.1)}
+/* Tooltip */
+.tooltip-box{position:fixed;background:var(--bg);border:1px solid var(--bd2);border-radius:6px;padding:6px 10px;font-size:11px;color:var(--tx);pointer-events:none;z-index:999;display:none;max-width:200px;line-height:1.5}
+/* Danger button states */
+.danger-btn.hint-pulse {
+  animation: dangerPulse .6s ease-in-out infinite;
+  box-shadow: 0 0 0 0 rgba(255,60,90,.6);
+}
+@keyframes dangerPulse {
+  0%   { box-shadow: 0 4px 20px rgba(255,60,90,.4), 0 0 0 0 rgba(255,60,90,.5); }
+  50%  { box-shadow: 0 4px 40px rgba(255,60,90,.8), 0 0 0 16px rgba(255,60,90,0); transform: scale(1.03); }
+  100% { box-shadow: 0 4px 20px rgba(255,60,90,.4), 0 0 0 0 rgba(255,60,90,0); transform: scale(1); }
+}
+.danger-btn.answered-ok  { background: var(--green) !important; box-shadow: 0 4px 20px rgba(34,212,138,.4) !important; animation: none !important; }
+.danger-btn.answered-bad { background: var(--tx3)   !important; box-shadow: none !important; animation: none !important; cursor: not-allowed !important; }
+
+/* Score dot on progress bar */
+.score-dot {
+  position: absolute;
+  top: 50%; transform: translate(-50%, -50%);
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  font-size: 8px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  color: #000; pointer-events: none; z-index: 5;
+  animation: scorePop .3s ease;
+}
+@keyframes scorePop { from { transform: translate(-50%,-50%) scale(0); } to { transform: translate(-50%,-50%) scale(1); } }
+
+/* Settings panel */
+.settings-panel {
+  position: fixed; top: 52px; right: 0; width: 280px; bottom: 0;
+  background: var(--bg2); border-left: 1px solid var(--bd);
+  z-index: 180; transform: translateX(100%);
+  transition: transform .3s cubic-bezier(.16,1,.3,1);
+  display: flex; flex-direction: column;
+}
+.settings-panel.open { transform: none; }
+.settings-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--bd); }
+.settings-lbl { font-size: 12px; color: var(--tx2); }
+.toggle-switch { position: relative; width: 38px; height: 22px; cursor: pointer; }
+.toggle-switch input { display: none; }
+.toggle-track { position: absolute; inset: 0; background: var(--bg4); border-radius: 11px; border: 1px solid var(--bd2); transition: background .2s; }
+.toggle-switch input:checked + .toggle-track { background: var(--blue); border-color: var(--blue); }
+.toggle-thumb { position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 50%; background: #fff; transition: left .2s; }
+.toggle-switch input:checked ~ .toggle-thumb { left: 19px; }
+
+/* ── MOBILE MENU TOGGLE ─────────────────────────── */
+.menu-toggle {
+  display: none;
+  background: var(--bg3);
+  border: 1px solid var(--bd2);
+  border-radius: 5px;
+  color: var(--tx2);
+  padding: 5px 9px;
+  font-size: 16px;
+  cursor: pointer;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: all .15s;
+}
+.menu-toggle:hover { color: var(--tx); border-color: var(--blue); }
+
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 52px 0 0 0;
+  background: rgba(0,0,0,.55);
+  z-index: 140;
+  backdrop-filter: blur(2px);
+}
+.sidebar-backdrop.show { display: block; }
+
+@media(max-width:700px) {
+  .menu-toggle { display: flex; align-items: center; }
+
+  /* Learn sidebar — ẩn mặc định, hiện khi .open */
+  .learn-side {
+    position: fixed !important;
+    top: 52px; left: 0; bottom: 0;
+    width: 75%; max-width: 280px;
+    z-index: 150;
+    box-shadow: 4px 0 24px rgba(0,0,0,.5);
+    transform: translateX(-100%);
+    transition: transform .3s cubic-bezier(.16,1,.3,1);
+  }
+  .learn-side.open { transform: none; }
+
+  /* Settings panel full-width trên mobile */
+  .settings-panel { width: 100%; }
+
+  /* Topbar compact */
+  .topbar { padding: 0 10px; gap: 8px; }
+  .logo   { font-size: 13px; }
+  .tb-tab { padding: 5px 8px; font-size: 11px; }
+
+  /* Ẩn overflow ngang */
+  body { overflow-x: hidden; }
+  .app  { overflow-x: hidden; max-width: 100vw; }
+}
+/* ── Responsive ─── */
+@media(max-width:700px){
+  .learn-layout{grid-template-columns:1fr}
+  .learn-side{display:none}.learn-side.open{display:flex;position:fixed;inset:52px 0 0 0;z-index:150;overflow-y:auto;width:80%;max-width:280px}
+  .detail-panel{width:100%;top:52px}
+  .th-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
+  .practice-wrap,.exam-screen-wrap,.exam-setup-wrap{padding:12px}
+  .danger-btn{height:56px;font-size:15px}
+  .danger-btn .kbd{display:none}
+}
+@media(max-width:480px){
+  .tb-tab{padding:5px 10px;font-size:11px}
+  .exam-hud{gap:8px}
+}
+</style>
+</head>
+<body>
+<div id="tooltip-box" class="tooltip-box"></div>
+
+<div class="app">
+<!-- ── TOPBAR ─────────────────────────────────── -->
+<header class="topbar">
+  <button class="menu-toggle" id="menu-toggle-btn" onclick="toggleLearnSide()">☰</button>
+  <div class="logo">⚡ <span>GPLX</span> Tình Huống</div>
+  <div class="tb-tabs">
+    <button class="tb-tab active" onclick="showTab('learn')">📚 Học</button>
+    <button class="tb-tab" onclick="showTab('practice')">🎮 Luyện tập</button>
+    <button class="tb-tab" onclick="showTab('exam')">🏁 Thi mô phỏng</button>
+  </div>
+  <button class="ctrl-btn" onclick="toggleSettings()" style="flex-shrink:0;font-size:12px">⚙️</button>
+</header>
+<div id="sidebar-backdrop" class="sidebar-backdrop" onclick="closeLearnSide()"></div>
+<!-- ═══════════════════════════════════════════
+     TAB 1: LEARN
+═══════════════════════════════════════════ -->
+<div id="tab-learn" class="tab-panel active">
+  <div class="learn-layout">
+    <!-- Sidebar categories -->
+    <div class="learn-side" id="learn-side">
+      <div class="cat-header">Phân loại</div>
+      <div class="cat-item active" onclick="filterCat(0)" data-cat="0">
+        <div class="cat-dot" style="background:#888"></div>
+        <div class="cat-name">Tất cả tình huống</div>
+        <div class="cat-cnt">120</div>
+      </div>
+      <div class="cat-sep"></div>
+      <div id="cat-list"></div>
+    </div>
+
+    <!-- Main grid -->
+    <div class="learn-main">
+      <div class="learn-toolbar">
+        <input class="srch-input" id="learn-srch" placeholder="🔍 Tìm tình huống..." oninput="renderGrid()">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--tx3)" id="grid-count">120</div>
+      </div>
+      <div class="th-grid" id="th-grid"></div>
+    </div>
+  </div>
+
+  <!-- Detail panel -->
+  <div class="detail-panel" id="detail-panel">
+    <div class="dp-header">
+      <button class="dp-close" onclick="closeDetail()">✕ Đóng</button>
+      <div class="dp-title" id="dp-title">—</div>
+      <button class="ctrl-btn" onclick="practiceThis()" style="font-size:11px">▶ Luyện</button>
+	  <button class="btn-img-guide" onclick="openImgModal(${s.num})">🖼 Hình hướng dẫn</button>
+    </div>
+    <div class="dp-body" id="dp-body"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 2: PRACTICE
+═══════════════════════════════════════════ -->
+<div id="tab-practice" class="tab-panel">
+  <div class="practice-wrap">
+    <!-- Video player -->
+    <div class="player-card" id="practice-player-card">
+      <div class="player-video-wrap" id="pv-wrap">
+        <video id="pv" playsinline preload="auto"></video>
+
+        <!-- Idle overlay -->
+        <div class="player-overlay clickable" id="pv-idle" onclick="pvPlay()">
+          <div class="overlay-big-btn">▶</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.7)">Nhấn để xem tình huống</div>
+        </div>
+
+        <!-- Result flash -->
+        <div class="result-flash" id="pv-flash">
+          <div class="result-flash-icon" id="pv-flash-icon"></div>
+          <div class="result-flash-txt" id="pv-flash-txt"></div>
+          <div style="font-size:12px;color:rgba(255,255,255,.7)" id="pv-flash-sub"></div>
+        </div>
+
+        <!-- Press hint popup -->
+        <div class="press-hint" id="pv-hint">⚡ NHẬN DIỆN NGAY! &nbsp;<kbd style="background:rgba(0,0,0,.3);border-radius:3px;padding:1px 6px">SPACE</kbd></div>
+
+        <!-- Progress bar -->
+        <div class="player-progress">
+          <div class="player-prog-danger" id="pv-zone"></div>
+          <div class="player-prog-fill" id="pv-prog"></div>
+        </div>
+      </div>
+
+      <div class="player-controls">
+        <div class="pc-left">
+          <button class="ctrl-btn" id="pv-play-btn" onclick="pvToggle()">▶ Phát</button>
+          <button class="ctrl-btn" onclick="pvReplay()">↺ Xem lại</button>
+          <button class="ctrl-btn" onclick="pvSpeed()" id="pv-speed-btn">1×</button>
+        </div>
+        <div class="pc-center">
+          <div style="font-family:var(--mono);font-size:11px;color:var(--tx3)" id="pv-time">0.0 / 0.0s</div>
+        </div>
+        <div class="pc-right">
+          <button class="ctrl-btn" onclick="prevSit()">← Trước</button>
+          <button class="ctrl-btn" onclick="nextSit()">Tiếp →</button>
+        </div>
+		<button class="btn-img-guide" id="pv-img-btn" onclick="openImgModal(SITUATIONS[currentSitIdx].num)">🖼 Hình</button>
+      </div>
+    </div>
+
+    <!-- DANGER BUTTON -->
+    <button class="danger-btn" id="practice-danger-btn" onclick="pressDanger()" disabled>
+      🚨 NHẬN DIỆN NGUY HIỂM
+      <span class="kbd">SPACE</span>
+    </button>
+
+    <!-- Info & tips -->
+    <div class="player-info" id="practice-info"></div>
+
+    <!-- Nav -->
+    <div class="nav-btn-set">
+      <button class="ctrl-btn" onclick="prevSit()">← Tình huống trước</button>
+      <button class="ctrl-btn primary" onclick="rndSit()">🎲 Ngẫu nhiên</button>
+      <button class="ctrl-btn" onclick="nextSit()">Tình huống tiếp →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 3: EXAM
+═══════════════════════════════════════════ -->
+<div id="tab-exam" class="tab-panel">
+  <!-- Setup screen -->
+  <div class="exam-setup-wrap" id="exam-setup">
+    <div class="exam-setup-card">
+      <div class="exam-setup-title">🏁 Thi Mô Phỏng</div>
+      <div class="exam-setup-sub">120 tình huống · Nhận diện nguy hiểm đúng thời điểm</div>
+      <div class="exam-desc">
+	  <strong>Luật thi:</strong> 10 tình huống · Tổng 50 điểm · Thời gian ~5–6 phút.<br>
+	  Cần <strong>≥ 35/50 điểm</strong> để đậu.<br><br>
+	  <strong>Cách tính điểm mỗi tình huống (0–5 điểm):</strong><br>
+	  ✅ <strong>5đ</strong> — Bấm ngay khi nguy hiểm bắt đầu (tối ưu)<br>
+	  🟡 <strong>4–1đ</strong> — Bấm muộn dần, điểm giảm theo thời gian<br>
+	  ❌ <strong>0đ</strong> — Bấm quá muộn, quá sớm hoặc không bấm
+	</div>
+      <div class="setup-row">
+        <div class="setup-lbl">Số tình huống thi</div>
+        <select class="setup-sel" id="exam-count-sel">
+          <option value="10">10 tình huống (luyện nhanh)</option>
+          <option value="20" selected>20 tình huống (đề chuẩn B)</option>
+          <option value="30">30 tình huống (đề nâng cao)</option>
+        </select>
+      </div>
+      <div class="setup-row">
+        <div class="setup-lbl">Phân loại</div>
+        <select class="setup-sel" id="exam-cat-sel">
+          <option value="0">Tất cả (ngẫu nhiên)</option>
+          <option value="1">Nhóm 1 — Đèn tín hiệu</option>
+          <option value="2">Nhóm 2 — Ngã tư tự do</option>
+          <option value="3">Nhóm 3 — Vượt xe</option>
+          <option value="4">Nhóm 4 — Người yếu thế</option>
+          <option value="5">Nhóm 5 — Điều kiện đặc biệt</option>
+          <option value="6">Nhóm 6 — Đô thị</option>
+        </select>
+      </div>
+      <div class="setup-row">
+        <div class="setup-lbl">Chế độ gợi ý</div>
+        <select class="setup-sel" id="exam-hint-sel">
+          <option value="none">Không gợi ý (thi thật)</option>
+          <option value="zone">Hiện vùng nguy hiểm trên thanh tiến trình</option>
+          <option value="full">Gợi ý đầy đủ (luyện)</option>
+        </select>
+      </div>
+      <button class="start-exam-btn" onclick="startExam()">🚀 Bắt đầu thi</button>
+    </div>
+  </div>
+
+  <!-- Exam screen -->
+  <div class="exam-screen-wrap" id="exam-screen" style="display:none">
+    <div class="exam-hud">
+      <div class="hud-q">Tình huống <strong id="hud-qnum">1</strong> / <span id="hud-qtotal">20</span></div>
+      <div class="hud-timer" id="hud-timer">15</div>
+      <div class="hud-score" id="hud-score"><span class="ok">0</span> ✓ &nbsp; <span class="bad">0</span> ✗</div>
+      <div class="hud-prog" style="margin-top:0"><div class="hud-prog-fill" id="hud-prog-fill" style="width:0%"></div></div>
+    </div>
+
+    <div class="exam-video-card" id="exam-video-card">
+      <video id="ev" playsinline preload="auto" style="width:100%;height:100%;display:block"></video>
+      <div class="result-flash" id="ev-flash">
+        <div class="result-flash-icon" id="ev-flash-icon"></div>
+        <div class="result-flash-txt" id="ev-flash-txt"></div>
+        <div style="font-size:12px;color:rgba(255,255,255,.7)" id="ev-flash-sub"></div>
+      </div>
+      <div class="press-hint" id="ev-hint">⚡ NHẬN DIỆN NGUY HIỂM!</div>
+      <div class="player-progress">
+        <div class="player-prog-danger" id="ev-zone" style="display:none"></div>
+        <div class="player-prog-fill" id="ev-prog"></div>
+      </div>
+      <!-- Countdown overlay -->
+      <div class="exam-wait" id="exam-wait">
+        <div class="exam-wait-countdown" id="exam-countdown">3</div>
+        <div class="exam-wait-txt">Chuẩn bị...</div>
+      </div>
+    </div>
+
+    <button class="danger-btn" id="exam-danger-btn" onclick="examPressDanger()">
+      🚨 NHẬN DIỆN NGUY HIỂM
+    </button>
+
+    <button class="ctrl-btn" onclick="exitExam()" style="width:100%;max-width:720px;justify-content:center">
+      ✕ Thoát
+    </button>
+  </div>
+
+  <!-- Result screen -->
+  <div class="result-wrap" id="exam-result" style="display:none">
+    <div class="result-card">
+      <div class="result-score-display">
+        <div class="result-big" id="res-big"></div>
+        <div class="result-verdict" id="res-verdict"></div>
+        <div style="font-size:12px;color:var(--tx2);margin-top:6px" id="res-sub"></div>
+      </div>
+      <div class="result-detail">
+<div class="rd-cell"><div class="rd-val" id="res-ok" style="color:var(--cyan)"></div><div class="rd-lbl">Điểm đạt</div></div>
+<div class="rd-cell"><div class="rd-val" id="res-bad" style="color:var(--tx3)"></div><div class="rd-lbl">Điểm mất</div></div>
+<div class="rd-cell"><div class="rd-val" id="res-pct" style="color:var(--cyan)"></div><div class="rd-lbl">Tỷ lệ</div></div>
+      </div>
+      <div class="tip-label">Chi tiết từng tình huống</div>
+      <div class="result-list" id="res-list"></div>
+      <div class="result-btns">
+        <button class="ctrl-btn primary" onclick="startExam()">🔄 Thi lại</button>
+        <button class="ctrl-btn" onclick="showTab('learn')">📚 Học lại</button>
+        <button class="ctrl-btn" onclick="exitExam()">← Menu</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div><!-- /app -->
+<!-- Image Guide Modal -->
+<div id="img-modal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);align-items:center;justify-content:center;flex-direction:column;gap:12px" onclick="closeImgModal()">
+  <div style="position:relative;max-width:90vw;max-height:85vh" onclick="e=>e.stopPropagation()">
+    <img id="img-modal-src" style="max-width:90vw;max-height:80vh;border-radius:10px;border:1px solid var(--bd2);display:block;box-shadow:0 20px 60px rgba(0,0,0,.8)" alt="">
+    <div style="position:absolute;top:-36px;right:0;display:flex;gap:8px">
+      <div id="img-modal-label" style="font-size:12px;color:var(--tx2);padding:4px 10px;background:var(--bg3);border-radius:4px"></div>
+      <button onclick="closeImgModal()" style="background:var(--bg3);border:1px solid var(--bd2);color:var(--tx2);padding:4px 12px;border-radius:4px;cursor:pointer;font-size:12px">✕ Đóng</button>
+    </div>
+  </div>
+  <div style="display:flex;gap:10px">
+    <button onclick="imgModalNav(-1)" class="ctrl-btn">← Trước</button>
+    <button onclick="imgModalNav(1)" class="ctrl-btn">Tiếp →</button>
+  </div>
+</div>
+<div class="settings-panel" id="settings-panel">
+  <div style="padding:14px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px">
+    <span style="font-weight:700;flex:1">⚙️ Cài đặt</span>
+    <button class="ctrl-btn" onclick="toggleSettings()">✕</button>
+  </div>
+
+  <div class="settings-row">
+    <div>
+      <div class="settings-lbl" style="color:var(--tx);font-weight:600">Tự động play video</div>
+      <div class="settings-lbl" style="font-size:10px;margin-top:2px">Khi bấm "Nhận diện tình huống này"</div>
+    </div>
+    <label class="toggle-switch">
+      <input type="checkbox" id="opt-autoplay" checked onchange="saveSettings()">
+      <div class="toggle-track"></div>
+      <div class="toggle-thumb"></div>
+    </label>
+  </div>
+
+  <div class="settings-row">
+    <div>
+      <div class="settings-lbl" style="color:var(--tx);font-weight:600">Highlight nút khi đến lúc bấm</div>
+      <div class="settings-lbl" style="font-size:10px;margin-top:2px">Hiệu ứng nhấp nháy trên nút đỏ</div>
+    </div>
+    <label class="toggle-switch">
+      <input type="checkbox" id="opt-highlight" checked onchange="saveSettings()">
+      <div class="toggle-track"></div>
+      <div class="toggle-thumb"></div>
+    </label>
+  </div>
+
+  <div class="settings-row">
+    <div>
+      <div class="settings-lbl" style="color:var(--tx);font-weight:600">Hiện gợi ý thời điểm</div>
+      <div class="settings-lbl" style="font-size:10px;margin-top:2px">Popup "Nhận diện ngay!" khi luyện tập</div>
+    </div>
+    <label class="toggle-switch">
+      <input type="checkbox" id="opt-hint-popup" checked onchange="saveSettings()">
+      <div class="toggle-track"></div>
+      <div class="toggle-thumb"></div>
+    </label>
+  </div>
+
+  <div class="settings-row">
+    <div>
+      <div class="settings-lbl" style="color:var(--tx);font-weight:600">Điểm trên thanh tiến trình</div>
+      <div class="settings-lbl" style="font-size:10px;margin-top:2px">Hiển thị điểm tại vị trí bấm</div>
+    </div>
+    <label class="toggle-switch">
+      <input type="checkbox" id="opt-score-dot" checked onchange="saveSettings()">
+      <div class="toggle-track"></div>
+      <div class="toggle-thumb"></div>
+    </label>
+  </div>
+</div>
+<script>
+'use strict';
+// ═══════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════
+const BASE_VID = 'https://v.vnecdn.net/vnexpress/video/web/mp4/2024/03/25/';
+const BASE_IMG = 'images/';
+
+// ── CATEGORIES (theo tài liệu chính thức) ─────────────────
+const CATS = [
+  {id:1,name:'Đô thị & Khu dân cư đông đúc',     short:'Đô thị',    range:[1,29],  color:'#3d8ef8',icon:'🏙'},
+  {id:2,name:'Đường gấp khúc ban đêm',             short:'Ban đêm',   range:[30,43], color:'#a060f8',icon:'🌙'},
+  {id:3,name:'Đường cao tốc (phần 1)',              short:'Cao tốc I', range:[44,63], color:'#f04060',icon:'🛣'},
+  {id:4,name:'Đường cao tốc (phần 2)',              short:'Cao tốc II',range:[64,73], color:'#f0a030',icon:'⛽'},
+  {id:5,name:'Ngoại thành & Địa hình phức tạp',    short:'Ngoại thành',range:[74,90],color:'#22d48a',icon:'🌾'},
+  {id:6,name:'Tình huống hỗn hợp',                 short:'Hỗn hợp',  range:[91,120],color:'#20c8e0',icon:'🔀'},
+];
+
+// ── ALL 120 SITUATIONS ─────────────────────────────────────
+const ALL_SITS = [
+  {n:1,  t:'Người đi bộ sang đường khuất sau xe tải',         tip:'Ấn Space khi người đi bộ xuất hiện sau đuôi xe tải',                                                  dp:.62},
+  {n:2,  t:'Người đi bộ băng qua đường ở vạch kẻ đường',      tip:'Ấn Space khi chân trái người đi bộ bước lên giữa dải phân cách',                                       dp:.55},
+  {n:3,  t:'Xe phía trước phanh gấp',                         tip:'Ấn Space khi nhận thấy đèn phanh xe phía trước sáng lên',                                              dp:.60},
+  {n:4,  t:'Tránh xe rẽ phải tại giao lộ',                    tip:'Ấn Space khi nhận thấy xe đen ở đường nhánh chuẩn bị rẽ',                                              dp:.58},
+  {n:5,  t:'Tránh xe máy bất ngờ chuyển làn',                 tip:'Ấn Space khi xe máy bất ngờ chuyển sang làn bên cạnh',                                                 dp:.60},
+  {n:6,  t:'Tránh xe buýt lấn làn đường',                     tip:'Ấn Space khi xe buýt bắt đầu đánh lái tránh xe con',                                                   dp:.65},
+  {n:7,  t:'Xe phía trước dừng nhường đường cho người đi bộ', tip:'Ấn Space khi đèn phanh xe phía trước sáng',                                                            dp:.60},
+  {n:8,  t:'Tránh xe đạp sang đường tại giao lộ',             tip:'Ấn Space khi xe đạp tiến sát giao lộ chuẩn bị sang đường',                                             dp:.62},
+  {n:9,  t:'Tránh xe lấn làn vượt xe',                        tip:'Ấn Space khi xe con bắt đầu đánh lái lấn làn đường',                                                   dp:.58},
+  {n:10, t:'Tránh xe nhập từ đường nhánh vào đường chính',    tip:'Ấn Space khi thấy xe con từ đường nhánh đi ra với tốc độ cao',                                         dp:.60},
+  {n:11, t:'Nhường đường cho xe trộn bê tông',                tip:'Ấn Space khi xe trộn bê tông bắt đầu rẽ phải vào đường xe đang chạy',                                  dp:.63},
+  {n:12, t:'Nhường đường cho xe rẽ trái (đã vào giao lộ trước)',tip:'Ấn Space khi xe con bắt đầu đánh lái trái và di chuyển',                                             dp:.65},
+  {n:13, t:'Nhường đường cho xe đạp băng qua đường',          tip:'Ấn Space khi xe đạp bắt đầu đi xuống lòng đường',                                                      dp:.58},
+  {n:14, t:'Nhường xe ngược chiều tại đường hẹp 2 bên',       tip:'Ấn Space khi nhìn thấy đầu xe tải xuất hiện chuẩn bị tới đường hẹp',                                  dp:.60},
+  {n:15, t:'Xe phía trước phanh giảm tốc độ',                 tip:'Ấn Space khi đèn phanh xe phía trước sáng',                                                            dp:.58},
+  {n:16, t:'Xe con rẽ trái từ đường nhánh khuất tầm nhìn',   tip:'Ấn Space tại thời điểm vừa thấy xe con đang lao đến',                                                  dp:.62},
+  {n:17, t:'Xe rẽ phải bất ngờ gặp xe buýt chạy lấn làn',   tip:'Ấn Space ngay sau khi nhận thấy xe buýt chạy lấn làn',                                                 dp:.65},
+  {n:18, t:'Cửa xe phía trước đang mở hé, tài xế sắp bước xuống',tip:'Ấn Space ngay khi nhận thấy cửa xe bên phía tài xế đang mở hé',                                   dp:.60},
+  {n:19, t:'Xe dừng bên đường bật đèn cảnh báo nguy hiểm',   tip:'Ấn Space khi tiến gần xe bật đèn cảnh báo và có người đang bước xuống đường',                          dp:.63},
+  {n:20, t:'Xe phía trước có tín hiệu mở cửa, tài xế bước ra',tip:'Ấn Space ngay khi đèn tín hiệu xe trắng chớp tắt',                                                    dp:.58},
+  {n:21, t:'Xe phía trước phanh dừng rồi đậu xe',             tip:'Ấn Space khi đèn phanh xe phía trước sáng',                                                            dp:.60},
+  {n:22, t:'Gặp xe rẽ trái tại giao lộ',                      tip:'Ấn Space khi thấy xe sắp vào giao lộ để rẽ trái',                                                      dp:.62},
+  {n:23, t:'Xe con lấn đường né xe tải đang đậu bật đèn cảnh báo',tip:'Ấn Space ngay khi thấy xe con lấn làn né xe tải',                                                 dp:.60},
+  {n:24, t:'Xe tải lấn làn né xe rác',                        tip:'Ấn Space ngay khi thấy xe tải lấn làn né xe rác',                                                      dp:.62},
+  {n:25, t:'Xe khách xi nhan xin đường bắt đầu di chuyển',    tip:'Ấn Space khi thấy xe khách xi nhan và đánh lái',                                                       dp:.65},
+  {n:26, t:'Gặp công trình, nhường xe ngược chiều',           tip:'Ấn Space khi xe tiến gần công trình và xuất hiện xe ngược chiều',                                      dp:.63},
+  {n:27, t:'Xe khách ô dù dừng đón khách ngay đèn tín hiệu',  tip:'Ấn Space khi đèn chuyển xanh nhưng xe khách không di chuyển',                                         dp:.60},
+  {n:28, t:'Đường có vũng nước, xe phía trước phanh giảm tốc',tip:'Ấn Space khi đèn phanh xe phía trước sáng',                                                            dp:.58},
+  {n:29, t:'Đường có ổ gà, xe phía trước phanh giảm tốc',     tip:'Ấn Space khi đèn phanh xe phía trước sáng',                                                            dp:.58},
+  // Ch II
+  {n:30, t:'Xuất hiện gia súc tại khúc cua',                  tip:'Ấn Space khi thấy 2 con bò và xe đến gần đống rơm bên phải',                                           dp:.65},
+  {n:31, t:'Đàn gia súc cắt ngang qua đường',                 tip:'Ấn Space khi phát hiện đàn gia súc đang cắt qua đường',                                                dp:.60},
+  {n:32, t:'Người đi bộ có xu hướng cắt qua đường',           tip:'Ấn Space khi phát hiện người đi bộ có xu hướng cắt đường, có xe ngược chiều đang đến gần',             dp:.62},
+  {n:33, t:'Nhiều người đi bộ đứng tràn ra đường phía trước', tip:'Ấn Space ngay khi phát hiện nhiều người đi bộ đứng tràn ra đường',                                     dp:.60},
+  {n:34, t:'Đường cong có xe khách đang vượt xe đạp',         tip:'Ấn Space ngay khi thấy xe khách lấn đường chuẩn bị vượt xe đạp',                                       dp:.63},
+  {n:35, t:'Xe phía trước phanh lại do xe vượt chướng ngại vật',tip:'Ấn Space khi thấy xe tải vượt chướng ngại vật, đèn phanh xe khách sáng',                            dp:.65},
+  {n:36, t:'Đoạn nhiều giao cắt, xe mô tô bất ngờ từ ngõ ra', tip:'Ấn Space ngay khi phát hiện xe mô tô lao nhanh ra từ ngõ',                                             dp:.60},
+  {n:37, t:'Đoạn nhiều giao cắt, xe đạp lao nhanh ra từ ngõ', tip:'Ấn Space ngay khi phát hiện xe đạp lao nhanh ra từ ngõ',                                               dp:.60},
+  {n:38, t:'Xe mô tô đi hàng đôi nguy hiểm phía trước',       tip:'Ấn Space khi xe tải phía trước lại gần và xe mô tô phía trước phanh đi chậm',                         dp:.65},
+  {n:39, t:'Xe phía trước nhập làn nguy hiểm',                tip:'Ấn Space khi xe tải có xu hướng nhập làn nguy hiểm',                                                   dp:.62},
+  {n:40, t:'Xe mô tô vượt ngược chiều qua xe đang bật đèn cảnh báo',tip:'Ấn Space ngay khi thấy xe máy đang lấn làn vượt lên',                                           dp:.63},
+  {n:41, t:'Giao lộ có xe bất ngờ rẽ trái nhanh',             tip:'Ấn Space khi thấy xe con không nhường đường và rẽ trái',                                               dp:.65},
+  {n:42, t:'Giao lộ có xe mô tô vượt đèn đỏ rẽ trái',        tip:'Ấn Space khi nhận thấy xe mô tô vượt đèn đỏ phóng nhanh, có xu hướng cúp đầu xe',                     dp:.62},
+  {n:43, t:'Xe phía trước xi nhan chuyển làn tránh công trình',tip:'Ấn Space khi thấy xe tải xi nhan xin chuyển làn',                                                     dp:.60},
+  // Ch III
+  {n:44, t:'Xe con phóng nhanh chuyển làn cúp đầu xe',        tip:'Ấn Space ngay khi phát hiện xe con phóng nhanh vượt xe và chuyển làn đột ngột',                        dp:.58},
+  {n:45, t:'Xe tải phóng nhanh chuyển làn cúp đầu xe',        tip:'Ấn Space khi thấy xe tải đè vạch và chuyển sang làn xe đang chạy',                                     dp:.60},
+  {n:46, t:'Xe con xi nhan ra tín hiệu và chuyển làn',        tip:'Ấn Space khi xe trắng đã vượt lên, xi nhan và chuẩn bị chuyển làn',                                    dp:.63},
+  {n:47, t:'Nhường đường cho xe cứu thương',                  tip:'Ấn Space khi nhìn thấy xe cứu thương trong kính hậu',                                                  dp:.55},
+  {n:48, t:'Đang chuyển làn nhưng xe sau không nhường đường', tip:'Ấn Space khi xe bắt đầu chuyển làn, xe sau đang quá gần',                                              dp:.62},
+  {n:49, t:'Xe phía trước xi nhan xin chuyển làn',            tip:'Ấn Space khi xe tải bắt đầu chuyển sang làn xe đang chạy',                                             dp:.60},
+  {n:50, t:'Xe phía trước xi nhan và chuyển làn',             tip:'Ấn Space ngay khi thấy xe tải bắt đầu chuyển vào làn xe đang chạy',                                    dp:.58},
+  {n:51, t:'Xe chạy ngược chiều trên cao tốc',                tip:'Ấn Space ngay khi phát hiện xe rẽ trái chạy ngược chiều',                                              dp:.55},
+  {n:52, t:'Xe lùi trên cao tốc',                             tip:'Ấn Space ngay khi nhận thấy xe tải đang lùi (có đèn báo lùi)',                                         dp:.57},
+  {n:53, t:'Xe chạy ngược chiều trên cao tốc vào ban đêm',    tip:'Ấn Space ngay khi thấy xe chạy ngược chiều',                                                           dp:.55},
+  {n:54, t:'Xe nhập làn cao tốc không nhường đường',          tip:'Ấn Space ngay khi thấy xe tải tới gần làn cao tốc nhưng không nhường đường',                           dp:.62},
+  {n:55, t:'Xe tải xi nhan xin chuyển làn',                   tip:'Ấn Space ngay khi thấy xe tải xi nhan xin chuyển làn',                                                 dp:.60},
+  {n:56, t:'Xe con xi nhan nhập làn nguy hiểm trên cao tốc',  tip:'Ấn Space ngay khi thấy xe con đè vạch làn xe đang chạy',                                               dp:.60},
+  {n:57, t:'Công trình đang thi công trên cao tốc',           tip:'Ấn Space ngay khi thấy xe đỏ phía trước chuyển làn tránh công trình',                                  dp:.58},
+  {n:58, t:'Công trình thi công cao tốc đông xe',             tip:'Ấn Space ngay khi thấy đèn phanh xe đỏ phía trước sáng',                                               dp:.60},
+  {n:59, t:'Xe tải bất ngờ chuyển làn rẽ vào đường cao tốc', tip:'Ấn Space ngay khi thấy xe tải bắt đầu chuyển làn',                                                     dp:.62},
+  {n:60, t:'Xe ô tô bất ngờ đánh lái nhập làn cao tốc',      tip:'Ấn Space ngay khi phát hiện xe ô tô đánh lái nhập làn cao tốc',                                        dp:.60},
+  {n:61, t:'Xe con chuyển sang làn xe đang chạy',             tip:'Ấn Space khi thấy xe con bắt đầu đè vạch và chuyển làn',                                               dp:.60},
+  {n:62, t:'Xe chạy ngược chiều trên cao tốc',                tip:'Ấn Space ngay khi thấy xe chạy ngược chiều',                                                           dp:.55},
+  {n:63, t:'Gia súc băng ra làn đường cao tốc',               tip:'Ấn Space ngay khi nhìn thấy đàn gia súc băng ra làn đường đang chạy',                                  dp:.58},
+  // Ch IV
+  {n:64, t:'Chỗ ngoặt nguy hiểm, xe khách phía trước phanh', tip:'Ấn Space khi nhận thấy đèn phanh xe phía trước sáng',                                                   dp:.60},
+  {n:65, t:'Chỗ ngoặt khuất tầm nhìn, xe khách lấn làn vượt',tip:'Ấn Space khi xe chạm tới biển cảnh báo chỗ ngoặt nguy hiểm',                                           dp:.62},
+  {n:66, t:'Xe ben vận chuyển đất đá thiếu che chắn',         tip:'Ấn Space ngay khi nhận thấy có đất đá rơi xuống đường',                                                dp:.63},
+  {n:67, t:'Khúc ngoặt khuất tầm nhìn, gia súc xuất hiện',   tip:'Ấn Space khi nhận thấy đèn phanh xe phía trước sáng',                                                  dp:.60},
+  {n:68, t:'Sương mù, gặp khúc ngoặt nguy hiểm phía trước',  tip:'Ấn Space khi thấy biển cảnh báo khúc ngoặt nguy hiểm phía trước',                                      dp:.58},
+  {n:69, t:'Đổ đèo',                                          tip:'Ấn Space khi nhận thấy có xe xuất hiện tại khúc ngoặt nguy hiểm tiếp theo',                            dp:.65},
+  {n:70, t:'Khúc ngoặt nguy hiểm trên đường đèo quanh co',   tip:'Ấn Space ngay khi thấy xe ngược chiều xuất hiện tại khúc ngoặt',                                       dp:.63},
+  {n:71, t:'Xe phía trước bất ngờ phanh tấp vào lề đường',   tip:'Ấn Space ngay khi thấy đèn phanh xe phía trước sáng',                                                  dp:.58},
+  {n:72, t:'Xe ngược chiều vượt xe trên đường quanh co sương mù (1)',tip:'Ấn Space ngay khi phát hiện có xe đang lấn làn vượt xe',                                        dp:.62},
+  {n:73, t:'Xe ngược chiều vượt xe trên đường quanh co sương mù (2)',tip:'Ấn Space ngay khi phát hiện xe ngược chiều tại khúc ngoặt nguy hiểm',                           dp:.62},
+  // Ch V
+  {n:74, t:'Xe đạp rẽ phải bất ngờ từ đường nhánh',          tip:'Ấn Space khi thấy xe đạp gần giao lộ',                                                                 dp:.60},
+  {n:75, t:'Trẻ em bất ngờ lao ra đường (1)',                 tip:'Ấn Space ngay khi thấy trẻ em đặt chân xuống lòng đường',                                              dp:.55},
+  {n:76, t:'Trẻ em bất ngờ lao ra đường (2)',                 tip:'Ấn Space ngay khi thấy trẻ em đang chạy giữa lòng đường',                                              dp:.55},
+  {n:77, t:'Xe con băng qua đường nguy hiểm',                 tip:'Ấn Space ngay khi thấy đầu xe con xuất hiện',                                                          dp:.58},
+  {n:78, t:'Xe mô tô vượt đèn đỏ',                           tip:'Ấn Space ngay khi thấy xe mô tô chạm vạch kẻ đường cho người đi bộ',                                   dp:.57},
+  {n:79, t:'Xe mô tô rẽ phải từ đường nhánh',                tip:'Ấn Space khi 2 xe mô tô chuẩn bị rẽ phải',                                                             dp:.60},
+  {n:80, t:'Xe mô tô chuyển làn tránh chướng ngại vật',      tip:'Ấn Space khi thấy xe mô tô gần đến chướng ngại vật, xi nhan chuyển làn',                               dp:.63},
+  {n:81, t:'Xe ô tô quay đầu',                                tip:'Ấn Space khi đầu xe ô tô đánh lái, đầu xe đã đến giữa dải phân cách',                                  dp:.65},
+  {n:82, t:'Xe tải lấn làn né xe buýt phía trước',           tip:'Ấn Space ngay khi thấy đầu xe tải đang đè vạch lấn làn',                                               dp:.62},
+  {n:83, t:'Gia súc băng ngang ra đường',                     tip:'Ấn Space ngay khi thấy con bò bắt đầu di chuyển',                                                      dp:.58},
+  {n:84, t:'Xe con xi nhan chuyển làn, có xe lớn làn bên ngoài',tip:'Ấn Space khi thấy xe con xi nhan xin chuyển làn',                                                   dp:.62},
+  {n:85, t:'Xe tải chở hàng thắng gập, hàng rơi trên đường', tip:'Ấn Space ngay khi thấy đèn phanh xe tải sáng',                                                         dp:.60},
+  {n:86, t:'Xe con phía trước đánh lái né chướng ngại vật',  tip:'Ấn Space ngay khi thấy xe con đánh lái',                                                               dp:.60},
+  {n:87, t:'Đường sắt cắt ngang có rào chắn',                 tip:'Ấn Space ngay khi thấy đầu xe lửa đang tới',                                                           dp:.63},
+  {n:88, t:'Xe mô tô xin chuyển làn né xe buýt đang dừng',   tip:'Ấn Space ngay khi thấy xe mô tô xi nhan chuyển làn né xe buýt',                                        dp:.60},
+  {n:89, t:'Xe đạp qua đường',                                tip:'Ấn Space khi thấy xe đạp bắt đầu di chuyển qua làn hướng xe đang chạy',                               dp:.58},
+  {n:90, t:'Xe con xi nhan chuyển làn né xe mô tô ngược chiều',tip:'Ấn Space khi thấy xe con xi nhan và bắt đầu đánh lái chuyển làn',                                    dp:.62},
+  // Ch VI
+  {n:91, t:'Xe con lùi trên cao tốc gần lối ra',              tip:'Ấn Space khi thấy khoảng cách đến xe trước quá gần (biển 50m)',                                        dp:.65},
+  {n:92, t:'Xe mô tô lấn làn vượt ẩu trên đèo',              tip:'Ấn Space khi thấy xe mô tô đang lấn làn và có xe ngược chiều ở khúc ngoặt',                            dp:.63},
+  {n:93, t:'Xe con chuyển làn gấp cắt ngang đầu xe',          tip:'Ấn Space ngay khi thấy đèn phanh xe con sáng và xi nhan',                                              dp:.60},
+  {n:94, t:'Xe phía trước gặp sự cố dừng lại bật đèn cảnh báo',tip:'Ấn Space ngay khi thấy đèn cảnh báo xe phía trước bật',                                              dp:.58},
+  {n:95, t:'Chướng ngại vật phía trước',                      tip:'Ấn Space khi thấy đèn cảnh báo phía trước, khoảng cách đến vật cản nguy hiểm',                         dp:.60},
+  {n:96, t:'Giao lộ có đèn tín hiệu',                         tip:'Ấn Space khi khoảng cách xe đang chạy đến giao lộ ở mức nguy hiểm',                                   dp:.63},
+  {n:97, t:'Xe đang chạy lấn làn tại khúc ngoặt nguy hiểm',  tip:'Ấn Space ngay khi thấy đầu xe khách xuất hiện tại khúc ngoặt',                                        dp:.62},
+  {n:98, t:'Công trình đang thi công phía trước',             tip:'Ấn Space ngay khi thấy công trình phía trước',                                                         dp:.58},
+  {n:99, t:'Xe ngược chiều lấn làn bật đèn pha trong hầm',   tip:'Ấn Space ngay khi thấy xe phía trước lấn sang làn xe đang chạy',                                       dp:.60},
+  {n:100,t:'Đường sắt cắt ngang không có rào chắn',           tip:'Ấn Space ngay khi thấy đầu tàu hoả xuất hiện',                                                         dp:.62},
+  {n:101,t:'Đường sắt cắt ngang không có rào chắn (2)',       tip:'Ấn Space sau khi bắt đầu đánh lái và thấy đèn báo tàu hoả sáng',                                       dp:.63},
+  {n:102,t:'Trời mưa đường trơn, va chạm xe cứu hoả ngược chiều',tip:'Ấn Space ngay khi thấy xe đi ngược chiều tại lối ra cao tốc',                                      dp:.58},
+  {n:103,t:'Va chạm với xe con đi ngược chiều',               tip:'Ấn Space ngay khi thấy xe con đánh lái tại chỗ quay đầu',                                              dp:.60},
+  {n:104,t:'Lái xe trong trạng thái không tỉnh táo',          tip:'Ấn Space ngay khi xe tiến gần đến giao lộ có tín hiệu',                                                dp:.62},
+  {n:105,t:'Va chạm với xe đi ngược chiều',                   tip:'Ấn Space ngay khi nhận thấy rõ có xe đi ngược chiều',                                                  dp:.58},
+  {n:106,t:'Đường quanh co sương mù, có công trình phía trước',tip:'Ấn Space ngay khi nhìn thấy công trình phía trước',                                                   dp:.60},
+  {n:107,t:'Vượt xe thiếu tầm nhìn trên đoạn đường cấm lấn làn',tip:'Ấn Space ngay khi xe đang chạy đánh lái lấn làn vượt xe',                                          dp:.55},
+  {n:108,t:'Đường quanh co, mất lái va chạm xe ngược chiều',  tip:'Ấn Space ngay khi thấy đầu xe ben đi ngược chiều',                                                    dp:.60},
+  {n:109,t:'Va chạm với xe con tại giao lộ đô thị',           tip:'Ấn Space ngay khi thấy xe con xuất hiện gần giao lộ',                                                  dp:.62},
+  {n:110,t:'Lái xe quá tốc độ gần giao lộ có đèn tín hiệu',  tip:'Ấn Space ngay khi xe gần lối rẽ phải nhưng không thấy giảm tốc',                                      dp:.60},
+  {n:111,t:'Xe khách lấn làn vượt ẩu gây tai nạn',            tip:'Ấn Space ngay khi thấy xe khách lấn làn xe đang chạy',                                                 dp:.58},
+  {n:112,t:'Vượt ẩu đường cấm lấn làn có xe ngược chiều',    tip:'Ấn Space ngay khi xe đang chạy đã lấn làn chuẩn bị vượt xe tải',                                       dp:.58},
+  {n:113,t:'Xe con vượt đèn đỏ gây tai nạn tại giao lộ',      tip:'Ấn Space ngay khi thấy xe đang chạy bắt đầu di chuyển',                                                dp:.55},
+  {n:114,t:'Đi cầu hẹp vào ban đêm',                          tip:'Ấn Space ngay khi xe bắt đầu đi vào cầu',                                                              dp:.57},
+  {n:115,t:'Không làm chủ tốc độ, tai nạn tại giao lộ (1)',   tip:'Ấn Space ngay khi thấy xe mô tô cúp đầu xe con trước mặt',                                             dp:.60},
+  {n:116,t:'Đất lở',                                          tip:'Ấn Space ngay sau khi đi qua biển cảnh báo sạt lở',                                                    dp:.62},
+  {n:117,t:'Không làm chủ tốc độ, tai nạn tại giao lộ (2)',   tip:'Ấn Space ngay khi thấy xe mô tô khuất đầu xe con trước mặt',                                           dp:.60},
+  {n:118,t:'Xe con dừng bật cảnh báo lại đường rẽ phải',      tip:'Ấn Space khi xe đang chạy chuẩn bị vào đường rẽ',                                                      dp:.63},
+  {n:119,t:'Không đảm bảo khoảng cách an toàn, va chạm xe đang đậu',tip:'Ấn Space khi khoảng cách với xe tải quá gần và xe tải bật xi nhan',                             dp:.62},
+  {n:120,t:'Không làm chủ tốc độ, va chạm với xe trước mặt', tip:'Ấn Space ngay khi thấy đèn phanh xe tải phía trước sáng',                                               dp:.60},
+];
+
+const CAT_TIPS = {
+  1: {
+    window: 2.0,
+    keySignals: [], // sẽ override từ ALL_SITS
+    tips: [
+      {t:'Luôn quan sát cả hai bên lề đường và gương hậu liên tục', c:''},
+      {t:'Giữ tốc độ ≤30 km/h trong khu dân cư, chân sẵn sàng phanh', c:'warn'},
+      {t:'Cửa xe đỗ có thể mở bất ngờ — giữ cách ≥1m', c:'warn'},
+      {t:'Đèn phanh xe trước sáng = nguy hiểm ngay, không chờ xác nhận', c:'danger'},
+    ],
+  },
+  2: {
+    window: 2.5,
+    keySignals: [],
+    tips: [
+      {t:'Ban đêm: tầm nhìn hạn chế, giảm tốc thêm 30% so với ban ngày', c:'warn'},
+      {t:'Đường gấp khúc: bấm còi + giảm pha trước khi vào cua', c:''},
+      {t:'Gia súc/người có thể xuất hiện bất ngờ tại khúc cua tối', c:'danger'},
+      {t:'Xe ngược chiều lấn làn trong đêm: vào lề phải ngay', c:'danger'},
+    ],
+  },
+  3: {
+    window: 3.0,
+    keySignals: [],
+    tips: [
+      {t:'Cao tốc: khoảng cách an toàn ≥100m khi chạy ≥100 km/h', c:'warn'},
+      {t:'Xe chuyển làn: luôn kiểm tra gương hậu + điểm mù trước khi chuyển', c:''},
+      {t:'Xe cứu thương trong kính hậu: vào lề phải ngay, không phanh gấp', c:'danger'},
+      {t:'Lỡ qua lối ra cao tốc: KHÔNG lùi — đi đến lối ra tiếp theo', c:'danger'},
+    ],
+  },
+  4: {
+    window: 2.5,
+    keySignals: [],
+    tips: [
+      {t:'Đường đèo: về số thấp từ chân dốc, không nhả côn đột ngột', c:'warn'},
+      {t:'Sương mù: bật đèn sương mù + hazard, tốc độ <40 km/h', c:'warn'},
+      {t:'Khúc ngoặt khuất tầm nhìn: bấm còi và đi sát lề phải', c:'danger'},
+      {t:'Chướng ngại vật rơi trên đường: phanh dần, không đánh lái gấp', c:'danger'},
+    ],
+  },
+  5: {
+    window: 2.5,
+    keySignals: [],
+    tips: [
+      {t:'Đường ngoại thành: thường không có dải phân cách, đề phòng xe vượt ẩu', c:'warn'},
+      {t:'Gia súc, trẻ em khu vực nông thôn — luôn giảm tốc khi đi qua xóm làng', c:'danger'},
+      {t:'Đường sắt không có rào chắn: dừng hẳn, quan sát cả 2 chiều', c:'danger'},
+      {t:'Xe ben chở đất đá: giữ khoảng cách xa, tránh đi song song', c:'warn'},
+    ],
+  },
+  6: {
+    window: 2.5,
+    keySignals: [],
+    tips: [
+      {t:'Tình huống hỗn hợp: không dự đoán được loại nguy hiểm — luôn sẵn sàng', c:'warn'},
+      {t:'Mất tập trung, buồn ngủ, rượu bia = tội phạm giao thông', c:'danger'},
+      {t:'Xe lấn làn + ngược chiều: vào lề phải ngay, không cố vượt qua', c:'danger'},
+      {t:'Giao lộ có đèn: kiểm tra cả 4 hướng dù đang xanh', c:''},
+    ],
+  },
+};
+
+// Settings
+const OPTS = {
+  autoplay:    true,
+  highlight:   true,
+  hintPopup:   true,
+  scoreDot:    true,
+};
+function loadSettings() {
+  try {
+    const s = JSON.parse(localStorage.getItem('gplx_th_opts') || '{}');
+    Object.assign(OPTS, s);
+    document.getElementById('opt-autoplay').checked    = OPTS.autoplay;
+    document.getElementById('opt-highlight').checked   = OPTS.highlight;
+    document.getElementById('opt-hint-popup').checked  = OPTS.hintPopup;
+    document.getElementById('opt-score-dot').checked   = OPTS.scoreDot;
+  } catch(e) {}
+}
+function saveSettings() {
+  OPTS.autoplay   = document.getElementById('opt-autoplay').checked;
+  OPTS.highlight  = document.getElementById('opt-highlight').checked;
+  OPTS.hintPopup  = document.getElementById('opt-hint-popup').checked;
+  OPTS.scoreDot   = document.getElementById('opt-score-dot').checked;
+  try { localStorage.setItem('gplx_th_opts', JSON.stringify(OPTS)); } catch(e) {}
+}
+function toggleSettings() {
+  document.getElementById('settings-panel').classList.toggle('open');
+}
+// ── URL PARAMS ROUTING ─────────────────────────────────────
+function parseUrlParams() {
+  const p = new URLSearchParams(window.location.search);
+
+  // ?tab=learn | practice | exam
+  const tab = p.get('tab');
+  if (tab && ['learn','practice','exam'].includes(tab)) {
+    showTab(tab);
+  }
+
+  // ?sit=42  → mở thẳng tình huống số 42 trong luyện tập
+  const sit = p.get('sit') ?? parseInt(p.get('sit'));
+  if (sit >= 1 && sit <= 120) {
+    currentSitIdx = sit - 1;
+    if (tab === 'practice') {
+      loadSit(currentSitIdx);
+    } else if (tab === 'learn' || !tab) {
+      // Cuộn tới card và mở detail
+      showTab('learn');
+      setTimeout(() => {
+        openDetail(currentSitIdx);
+        document.getElementById('thc-' + sit)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+    }
+  }
+
+  // ?cat=3  → filter category trong Learn
+  const cat = p.get('cat') ?? parseInt(p.get('cat'));
+  if (cat >= 1 && cat <= 6 && !sit) {
+    showTab('learn');
+    filterCat(cat);
+  }
+
+  // ?exam=start  → bắt đầu thi luôn
+  if (p.get('exam') === 'start') {
+    showTab('exam');
+    setTimeout(() => startExam(), 300);
+  }
+}
+
+parseUrlParams();
+// ── BUILD SITUATIONS ARRAY ─────────────────────────────────
+const SITUATIONS = ALL_SITS.map(s => {
+  const id   = String(s.n).padStart(3,'0');
+  const cat  = CATS.find(c => s.n >= c.range[0] && s.n <= c.range[1]) || CATS[5];
+  const cdat = CAT_TIPS[cat.id];
+  return {
+    num: s.n, id,
+    title:   s.t,
+    catId:   cat.id, catName: cat.name, catColor: cat.color, catShort: cat.short, catIcon: cat.icon,
+    vidUrl:  BASE_VID + `th${id}.mp4`,
+    imgUrl:  BASE_IMG + `img_${s.n}.jpg`,
+    dangerPct: s.dp,
+    window:  cdat.window,
+    keySignals: [s.tip],      // exact tip from doc as primary signal
+    tips: cdat.tips,          // category-level safety tips
+    mainTip: s.tip,           // store separately for quick display
+  };
+});
+
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+let currentCat = 0;
+let currentSitIdx = 0; // index in SITUATIONS
+let pvSpeeds = [1, 0.5, 0.25];
+let pvSpeedIdx = 0;
+let pvDuration = 0;
+let pvPlaying = false;
+let pvAnswered = false;
+let pvResult = null; // 'correct'|'early'|'late'|'miss'
+
+// Exam state
+let ES = {
+  pool: [], idx: 0, results: [],
+  correct: 0, wrong: 0,  totalScore:0,
+  hintMode: 'none',
+  evTimer: null, evCountdown: null,
+  answered: false,
+};
+
+// ═══════════════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════════════
+function showTab(name) {
+	
+  const url = new URL(window.location);
+  url.searchParams.set('tab', name);
+  url.searchParams.delete('sit');
+  window.history.replaceState({}, '', url);
+
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tb-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  const map = {learn:0,practice:1,exam:2};
+  document.querySelectorAll('.tb-tab')[map[name]]?.classList.add('active');
+  if (name === 'practice') loadSit(currentSitIdx);
+  const toggleBtn = document.getElementById('menu-toggle-btn');
+  toggleBtn.style.display = name === 'learn' ? '' : 'none';
+  if (name !== 'learn') closeLearnSide();
+}
+
+// ═══════════════════════════════════════════════════════
+// LEARN TAB
+// ═══════════════════════════════════════════════════════
+function initLearn() {
+  // Build category list
+  const cl = document.getElementById('cat-list');
+  CATS.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'cat-item';
+    div.setAttribute('data-cat', c.id);
+    div.innerHTML = `<div class="cat-dot" style="background:${c.color}"></div>
+      <div class="cat-name">${c.icon} ${c.short}</div>
+      <div class="cat-cnt">20</div>`;
+    div.onclick = () => filterCat(c.id);
+    cl.appendChild(div);
+  });
+  renderGrid();
+}
+
+function filterCat(catId) {
+  if (window.innerWidth <= 700) closeLearnSide();
+  currentCat = catId;
+  document.querySelectorAll('.cat-item').forEach(el => {
+    el.classList.toggle('active', +el.getAttribute('data-cat') === catId);
+  });
+  closeDetail();
+  renderGrid();
+}
+
+function renderGrid() {
+  const srch = document.getElementById('learn-srch').value.toLowerCase();
+  const filtered = SITUATIONS.filter(s =>
+    (currentCat === 0 || s.catId === currentCat) &&
+    (!srch || s.title.toLowerCase().includes(srch) || String(s.num).includes(srch))
+  );
+  document.getElementById('grid-count').textContent = filtered.length;
+  const grid = document.getElementById('th-grid');
+  grid.innerHTML = filtered.map(s => `
+    <div class="th-card" onclick="openDetail(${s.num-1})" id="thc-${s.num}">
+      <img class="th-thumb" src="${s.imgUrl}" alt="th${s.id}"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+        loading="lazy">
+      <div class="th-thumb-ph" style="display:none">${s.catId <= 3 ? '🚗' : s.catId === 4 ? '🚶' : s.catId === 5 ? '🌧' : '🏙'}</div>
+      <div class="th-badge" style="background:${s.catColor}22;color:${s.catColor}">${s.catShort}</div>
+      <div class="th-play"><div class="th-play-icon">▶</div></div>
+      <div class="th-info">
+        <div class="th-num">TH${s.id}</div>
+        <div class="th-title">${s.title}</div>
+      </div>
+    </div>`).join('');
+}
+
+function openDetail(idx) {
+  currentSitIdx = idx;
+  const s = SITUATIONS[idx];
+  document.getElementById('dp-title').textContent = `TH${s.id} — ${s.title}`;
+  document.getElementById('detail-panel').classList.add('open');
+  document.querySelectorAll('.th-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('thc-'+s.num)?.classList.add('active');
+
+  const dangerPx = s.dangerPct * 100;
+  const zoneLo = Math.max(0, dangerPx - 12);
+  const zoneHi = Math.min(100, dangerPx + 12);
+
+  document.getElementById('dp-body').innerHTML = `
+    <div class="mini-player">
+      <video controls playsinline preload="none" style="width:100%;display:block">
+        <source src="${s.vidUrl}" type="video/mp4">
+      </video>
+    </div>
+    <div class="mini-img">
+      <img src="${s.imgUrl}" alt="Hình tình huống TH${s.id}" style="width:100%;border-radius:6px;display:block"
+        onerror="this.parentElement.style.display='none'">
+    </div>
+
+    <div class="hint-timing">
+      <div class="tip-label" style="margin-bottom:6px">Thời điểm nhận diện nguy hiểm</div>
+      <div class="hint-bar">
+        <div class="hint-zone" style="left:${zoneLo}%;width:${zoneHi-zoneLo}%"></div>
+        <div class="hint-moment" style="left:${dangerPx}%"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--tx3);font-family:var(--mono);margin-top:3px">
+        <span>Bắt đầu</span><span style="color:var(--amber)">⚡ ~${Math.round(dangerPx)}% video</span><span>Kết thúc</span>
+      </div>
+    </div>
+
+    <div class="tip-section">
+      <div class="tip-label">Dấu hiệu cần nhận diện</div>
+      ${(s.keySignals||[]).map(k=>`<div class="tip-item warn"><div class="tip-icon">👁</div><div>${k}</div></div>`).join('')}
+    </div>
+
+    <div class="tip-section">
+      <div class="tip-label">Mẹo xử lý</div>
+      ${s.tips.map(t=>`<div class="tip-item ${t.c||''}"><div class="tip-icon">${t.c==='danger'?'🚨':t.c==='warn'?'⚠️':'💡'}</div><div>${t.t}</div></div>`).join('')}
+    </div>
+
+    <button class="danger-btn" onclick="practiceThis()" style="margin-top:8px;height:48px;font-size:14px">
+      ▶ Luyện tập tình huống này
+    </button>`;
+}
+
+function closeDetail() {
+  document.getElementById('detail-panel').classList.remove('open');
+  document.querySelectorAll('.th-card').forEach(c => c.classList.remove('active'));
+}
+function practiceThis() {
+  closeDetail();
+  showTab('practice');
+  if (OPTS.autoplay) {
+    // Delay nhỏ để DOM render xong
+    setTimeout(() => pvPlay(), 300);
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// PRACTICE TAB — VIDEO PLAYER
+// ═══════════════════════════════════════════════════════
+let pvHintTimeout = null, pvHintEndTimeout = null, pvTickRAF = null;
+
+function loadSit(idx) {
+
+  // Sync URL
+  const p = new URLSearchParams(window.location.search);
+  const tab = p.get('tab');
+  if (tab === "practice") {
+	const url = new URL(window.location);
+	url.searchParams.set('sit', SITUATIONS[idx]?.num || idx + 1);
+	url.searchParams.set('tab', 'practice');
+	window.history.replaceState({}, '', url);
+  }
+
+  document.querySelectorAll('.score-dot').forEach(d => d.remove());
+  currentSitIdx = Math.max(0, Math.min(idx, 119));
+  const s = SITUATIONS[currentSitIdx];
+  pvAnswered = false; pvResult = null; pvPlaying = false; pvSpeedIdx = 0;
+  pvDuration = 0;
+
+  const v = document.getElementById('pv');
+  v.src = s.vidUrl;
+  v.playbackRate = 1;
+  v.pause();
+
+  document.getElementById('pv-speed-btn').textContent = '1×';
+  document.getElementById('pv-prog').style.width = '0%';
+  document.getElementById('pv-zone').style.cssText = '';
+  document.getElementById('pv-hint').style.display = 'none';
+  document.getElementById('pv-idle').style.display = 'flex';
+  document.getElementById('pv-flash').classList.remove('show');
+  document.getElementById('pv-play-btn').textContent = '▶ Phát';
+  document.getElementById('pv-time').textContent = '0.0 / ?.?s';
+
+  const btn = document.getElementById('practice-danger-btn');
+btn.disabled = true;
+btn.classList.remove('hint-pulse','answered-ok','answered-bad');
+btn.textContent = '🚨 NHẬN DIỆN NGUY HIỂM';  // reset text nếu bạn có thay đổi
+
+  // Info panel
+  const dangerPx = s.dangerPct * 100;
+  const zoneLo = Math.max(0, dangerPx - 14);
+  const zoneHi = Math.min(100, dangerPx + 14);
+  document.getElementById('practice-info').innerHTML = `
+    <div class="pi-meta">
+      <span class="pi-num">TH${s.id}</span>
+      <span class="pi-cat" style="border-color:${s.catColor};color:${s.catColor}">${s.catIcon||''} ${s.catShort}</span>
+    </div>
+    <div class="pi-title">${s.title}</div>
+    <div class="timeline-hint">
+      <div class="tl-label">Thời điểm nhấn ⚡</div>
+      <div class="tl-bar">
+        <div class="tl-safe" style="width:${zoneLo}%"></div>
+        <div class="tl-zone" style="left:${zoneLo}%;width:${zoneHi-zoneLo}%"></div>
+        <div class="tl-dot" style="left:${dangerPx}%"></div>
+      </div>
+      <div class="tl-labels"><span>Bắt đầu</span><span style="color:var(--amber)">~${Math.round(dangerPx)}% video</span><span>Kết thúc</span></div>
+    </div>
+	<button class="btn-img-guide" onclick="openImgModal(${s.num})" style="margin-bottom:10px">🖼 Xem hình hướng dẫn TH${s.id}</button>
+    <div style="margin-bottom:8px">
+      <div class="tip-label">Dấu hiệu nhận diện</div>
+      ${(s.keySignals||[]).map(k=>`<div class="pi-tip key"><span>👁</span> ${k}</div>`).join('')}
+    </div>
+    <div>
+      <div class="tip-label">Mẹo</div>
+      ${s.tips.slice(0,3).map(t=>`<div class="pi-tip ${t.c==='danger'?'key':''}"><span>${t.c==='danger'?'🚨':t.c==='warn'?'⚠️':'💡'}</span> ${t.t}</div>`).join('')}
+    </div>`;
+
+  v.addEventListener('loadedmetadata', onPvMeta, {once:true});
+}
+
+function onPvMeta() {
+  const v = document.getElementById('pv');
+  pvDuration = v.duration;
+  const s = SITUATIONS[currentSitIdx];
+  const dangerT = pvDuration * s.dangerPct;
+  const zoneLo = Math.max(0, (dangerT - s.window) / pvDuration * 100);
+  const zoneHi = Math.min(100, (dangerT + s.window) / pvDuration * 100);
+  document.getElementById('pv-zone').style.cssText = `left:${zoneLo}%;width:${zoneHi-zoneLo}%;`;
+  document.getElementById('pv-time').textContent = `0.0 / ${pvDuration.toFixed(1)}s`;
+}
+
+function pvPlay() {
+  const v = document.getElementById('pv');
+  document.getElementById('pv-idle').style.display = 'none';
+  v.play();
+  pvPlaying = true;
+  pvAnswered = false;
+  pvResult = null;
+  document.getElementById('pv-flash').classList.remove('show');
+  document.getElementById('practice-danger-btn').disabled = false;
+  document.getElementById('pv-play-btn').textContent = '⏸ Dừng';
+
+  // Schedule hint
+  if (pvDuration > 0) schedPvHint();
+  v.addEventListener('ended', onPvEnded, {once:true});
+  pvTick();
+}
+
+function schedPvHint() {
+  const s = SITUATIONS[currentSitIdx];
+  const dangerT = pvDuration * s.dangerPct;
+  const hintStart = Math.max(0, dangerT - s.window - 0.5);
+  const hintEnd   = dangerT + s.window + 0.5;
+  const v = document.getElementById('pv');
+  const hint = document.getElementById('pv-hint');
+  const btn  = document.getElementById('practice-danger-btn');
+  clearTimeout(pvHintTimeout); clearTimeout(pvHintEndTimeout);
+  const tNow = v.currentTime;
+
+  const delayShow = Math.max(0, (hintStart - tNow) * 1000);
+  const delayHide = Math.max(0, (hintEnd   - tNow) * 1000);
+
+  pvHintTimeout = setTimeout(() => {
+    if (pvAnswered) return;
+    if (OPTS.hintPopup) hint.style.display = 'block';
+    if (OPTS.highlight) btn.classList.add('hint-pulse');
+  }, delayShow);
+
+  pvHintEndTimeout = setTimeout(() => {
+    hint.style.display = 'none';
+    btn.classList.remove('hint-pulse');
+  }, delayHide);
+}
+
+function pvTick() {
+  const v = document.getElementById('pv');
+  if (!v || v.paused || v.ended) return;
+  const pct = pvDuration > 0 ? v.currentTime / pvDuration * 100 : 0;
+  document.getElementById('pv-prog').style.width = pct + '%';
+  document.getElementById('pv-time').textContent = `${v.currentTime.toFixed(1)} / ${pvDuration.toFixed(1)}s`;
+  pvTickRAF = requestAnimationFrame(pvTick);
+}
+
+function onPvEnded() {
+  pvPlaying = false;
+  document.getElementById('pv-play-btn').textContent = '↺ Replay';
+  document.getElementById('pv-hint').style.display = 'none';
+  if (!pvAnswered) {
+    pvResult = 'miss';
+    showPvFlash('miss', 0);
+    document.getElementById('practice-danger-btn').disabled = true;
+  }
+}
+
+function pvToggle() {
+  const v = document.getElementById('pv');
+  if (v.paused || v.ended) { if (v.ended) pvReplay(); else pvPlay(); }
+  else { v.pause(); pvPlaying = false; document.getElementById('pv-play-btn').textContent = '▶ Phát'; }
+}
+function pvReplay() {
+  const v = document.getElementById('pv');
+  v.currentTime = 0;
+  pvAnswered = false; pvResult = null;
+  document.getElementById('pv-flash').classList.remove('show');
+  document.getElementById('practice-danger-btn').disabled = false;
+  document.getElementById('pv-hint').style.display = 'none';
+  pvPlay();
+}
+function pvSpeed() {
+  pvSpeedIdx = (pvSpeedIdx + 1) % pvSpeeds.length;
+  const sp = pvSpeeds[pvSpeedIdx];
+  document.getElementById('pv').playbackRate = sp;
+  document.getElementById('pv-speed-btn').textContent = sp + '×';
+}
+
+function pressDanger() {
+  if (pvAnswered) return;          // chặn bấm nhiều lần
+  const v = document.getElementById('pv');
+  if (v.paused && !pvPlaying) return;
+  pvAnswered = true;
+
+  clearTimeout(pvHintTimeout); clearTimeout(pvHintEndTimeout);
+  document.getElementById('pv-hint').style.display = 'none';
+  document.getElementById('pv-hint').style.display = 'none';
+
+  const btn = document.getElementById('practice-danger-btn');
+  btn.disabled = true;
+  btn.classList.remove('hint-pulse');
+
+  const s = SITUATIONS[currentSitIdx];
+  const dangerT = pvDuration * s.dangerPct;
+  const diff = v.currentTime - dangerT;
+  const score = calcScore(diff, s.window);
+
+  // Màu nút theo kết quả
+  if (score >= 4) btn.classList.add('answered-ok');
+  else            btn.classList.add('answered-bad');
+
+  // Score dot trên progress bar
+  if (OPTS.scoreDot && pvDuration > 0) {
+    const pct = v.currentTime / pvDuration * 100;
+    const dotColor = score === 5 ? '#22d48a' : score >= 3 ? '#f0a030' : '#f04060';
+    const dot = document.createElement('div');
+    dot.className = 'score-dot';
+    dot.style.cssText = `left:${pct}%;background:${dotColor}`;
+    dot.textContent = score;
+    document.getElementById('pv-prog').parentElement.appendChild(dot);
+  }
+
+  let result;
+  if (diff < -1.0)     result = 'early';
+  else if (score === 0) result = 'late';
+  else                  result = score === 5 ? 'correct' : 'correct';
+
+  pvResult = result;
+  showPvFlash(result, diff, score);
+}
+
+function showPvFlash(result, diff, score) {
+  const flash = document.getElementById('pv-flash');
+  const s = score !== undefined ? score : 0;
+  const configs = {
+    correct: { icon: s===5?'✅':'🟡', txt: `${s} ĐIỂM`, sub: s===5?'Hoàn hảo! Đúng thời điểm':`Hơi muộn +${diff.toFixed(1)}s`, style: s===5?'color:#22d48a':'color:#f0a030' },
+    early:   { icon: '⏩', txt: '0 ĐIỂM', sub: `Quá sớm ${Math.abs(diff).toFixed(1)}s trước nguy hiểm`, style: 'color:#f0a030' },
+    late:    { icon: '⏪', txt: '0 ĐIỂM', sub: `Quá muộn +${diff.toFixed(1)}s`, style: 'color:#f04060' },
+    miss:    { icon: '❌', txt: '0 ĐIỂM', sub: 'Không nhận diện được tình huống', style: 'color:#f04060' },
+  };
+  const c = configs[result] || configs.miss;
+  document.getElementById('pv-flash-icon').textContent = c.icon;
+  document.getElementById('pv-flash-txt').textContent  = c.txt;
+  document.getElementById('pv-flash-txt').style        = c.style;
+  document.getElementById('pv-flash-sub').textContent  = c.sub;
+  flash.classList.add('show');
+  setTimeout(() => flash.classList.remove('show'), 3000);
+}
+
+function nextSit() { loadSit(currentSitIdx + 1); }
+function prevSit() { loadSit(currentSitIdx - 1); }
+function rndSit() { loadSit(Math.floor(Math.random() * 120)); }
+
+// ═══════════════════════════════════════════════════════
+// EXAM ENGINE
+// ═══════════════════════════════════════════════════════
+function startExam() {
+  const count = +document.getElementById('exam-count-sel').value;
+  const catFilter = +document.getElementById('exam-cat-sel').value;
+  ES.hintMode = document.getElementById('exam-hint-sel').value;
+
+  // Build pool
+  let pool = catFilter === 0 ? [...SITUATIONS] : SITUATIONS.filter(s => s.catId === catFilter);
+  pool.sort(() => Math.random() - .5);
+  ES.pool = pool.slice(0, count);
+  ES.idx = 0; ES.results = []; ES.correct = 0; ES.wrong = 0; ES.totalScore = 0;
+  ES.answered = false;
+
+  document.getElementById('exam-setup').style.display = 'none';
+  document.getElementById('exam-result').style.display = 'none';
+  document.getElementById('exam-screen').style.display = 'flex';
+  document.getElementById('hud-qtotal').textContent = ES.pool.length;
+
+  loadExamSit();
+}
+
+function loadExamSit() {
+  if (ES.idx >= ES.pool.length) { endExam(); return; }
+  ES.answered = false;
+  const s = ES.pool[ES.idx];
+
+  document.getElementById('hud-qnum').textContent = ES.idx + 1;
+  document.getElementById('hud-prog-fill').style.width = (ES.idx / ES.pool.length * 100) + '%';
+  updateHudScore();
+
+  // Reset video
+  const ev = document.getElementById('ev');
+  ev.src = s.vidUrl;
+  ev.playbackRate = 1;
+  ev.pause();
+  document.getElementById('ev-flash').classList.remove('show');
+  document.getElementById('ev-hint').style.display = 'none';
+  document.getElementById('ev-prog').style.width = '0%';
+  document.getElementById('ev-zone').style.display = 'none';
+  document.getElementById('exam-danger-btn').disabled = true;
+  document.getElementById('hud-timer').textContent = '—';
+  document.getElementById('hud-timer').className = 'hud-timer';
+
+  // Countdown then play
+  let cd = 3;
+  const cdEl = document.getElementById('exam-countdown');
+  const wait = document.getElementById('exam-wait');
+  wait.style.display = 'flex';
+  cdEl.textContent = cd;
+  const tick = setInterval(() => {
+    cd--;
+    if (cd <= 0) {
+      clearInterval(tick);
+      wait.style.display = 'none';
+      examPlay(s);
+    } else {
+      cdEl.textContent = cd;
+    }
+  }, 1000);
+}
+
+function examPlay(s) {
+  const ev = document.getElementById('ev');
+  ev.load();
+  ev.addEventListener('loadedmetadata', () => {
+    const dur = ev.duration;
+    const dangerT = dur * s.dangerPct;
+
+    // Hint zone on progress bar
+    if (ES.hintMode !== 'none') {
+      const lo = Math.max(0, (dangerT - s.window) / dur * 100);
+      const hi = Math.min(100, (dangerT + s.window) / dur * 100);
+      const zone = document.getElementById('ev-zone');
+      zone.style.cssText = `display:block;left:${lo}%;width:${hi-lo}%;`;
+    }
+
+    ev.play();
+    document.getElementById('exam-danger-btn').disabled = false;
+
+    // Hint popup
+    if (ES.hintMode === 'full') {
+      const hintDelay = Math.max(0, (dangerT - s.window - 0.3) * 1000);
+      setTimeout(() => {
+        if (!ES.answered) document.getElementById('ev-hint').style.display = 'block';
+      }, hintDelay);
+      setTimeout(() => document.getElementById('ev-hint').style.display = 'none',
+        (dangerT + s.window + 0.5) * 1000);
+    }
+	
+	// Highlight nút khi đến vùng nguy hiểm (áp dụng mọi chế độ)
+	const examBtn = document.getElementById('exam-danger-btn');
+	const hDelay = Math.max(0, (dangerT - s.window - 0.3) * 1000);
+	const hEndDelay = (dangerT + s.window + 0.5) * 1000;
+	setTimeout(() => {
+	  if (!ES.answered && OPTS.highlight) examBtn.classList.add('hint-pulse');
+	}, hDelay);
+	setTimeout(() => examBtn.classList.remove('hint-pulse'), hEndDelay);
+
+    // HUD timer counts up
+    let timerRAF;
+    function timerTick() {
+      const t = ev.currentTime;
+      const rem = Math.max(0, dur - t);
+      const el = document.getElementById('hud-timer');
+      el.textContent = rem.toFixed(1) + 's';
+      el.className = 'hud-timer' + (rem < 3 ? ' danger' : rem < 6 ? ' warn' : '');
+      document.getElementById('ev-prog').style.width = (t / dur * 100) + '%';
+      if (!ev.ended && !ev.paused) timerRAF = requestAnimationFrame(timerTick);
+    }
+    timerRAF = requestAnimationFrame(timerTick);
+
+    ev.addEventListener('ended', () => {
+      cancelAnimationFrame(timerRAF);
+      document.getElementById('ev-hint').style.display = 'none';
+      document.getElementById('hud-timer').textContent = '0.0s';
+      if (!ES.answered) {
+        ES.answered = true;
+        recordExamResult(s, 'miss', 0);
+      }
+    }, {once:true});
+	
+	ev.play().catch(() => {
+	  // Fallback nếu browser chặn autoplay
+	  document.getElementById('exam-wait').innerHTML =
+		`<button class="danger-btn" style="max-width:200px;height:48px;font-size:14px"
+		  onclick="document.getElementById('ev').play();this.closest('#exam-wait').style.display='none'">
+		  ▶ Bấm để bắt đầu
+		</button>`;
+	  document.getElementById('exam-wait').style.display = 'flex';
+	});
+
+  }, {once:true});
+}
+
+function calcScore(diff, window) {
+  // Bấm quá sớm (> 1s trước nguy hiểm) = 0đ
+  if (diff < -1.0) return 0;
+  // Bấm trong vùng tối ưu [-1s, 20% window] = 5đ
+  if (diff <= window * 0.20) return 5;
+  if (diff <= window * 0.40) return 4;
+  if (diff <= window * 0.60) return 3;
+  if (diff <= window * 0.80) return 2;
+  if (diff <= window)        return 1;
+  // Quá muộn = 0đ
+  return 0;
+}
+function examPressDanger() {
+  if (ES.answered) return;
+  ES.answered = true;
+  
+  const btn = document.getElementById('exam-danger-btn');
+  btn.disabled = true;
+  btn.classList.remove('hint-pulse');
+  
+  const s = ES.pool[ES.idx];
+  const ev = document.getElementById('ev');
+  document.getElementById('ev-hint').style.display = 'none';
+  document.getElementById('exam-danger-btn').disabled = true;
+
+  if (!ev.duration) { recordExamResult(s, 'correct', 0); return; }
+  const dangerT = ev.duration * s.dangerPct;
+  const diff = ev.currentTime - dangerT;
+  recordExamResult(s, 'pressed', diff);
+}
+
+function recordExamResult(s, action, diff) {
+  let score = 0;
+  let result, label, color;
+
+  if (action === 'miss') {
+    score = 0; result = 'miss';
+    label = 'Bỏ qua'; color = '#f04060';
+  } else {
+    score = calcScore(diff, s.window);
+    if (diff < -1.0) {
+      result = 'early'; label = `Quá sớm (${Math.abs(diff).toFixed(1)}s)`; color = '#f0a030';
+    } else if (score === 0) {
+      result = 'late';  label = `Quá muộn (+${diff.toFixed(1)}s)`;          color = '#f04060';
+    } else if (score === 5) {
+      result = 'perfect'; label = 'Hoàn hảo!';                               color = '#22d48a';
+    } else {
+      result = 'ok';    label = `Hơi muộn (+${diff.toFixed(1)}s)`;           color = '#f0a030';
+    }
+  }
+
+  ES.totalScore += score;
+  if (score >= 4) ES.correct++; else ES.wrong++;
+  ES.results.push({ s, result, diff: diff || 0, score, label, color });
+  updateHudScore();
+
+  // Flash
+  const icons = { perfect:'✅', ok:'🟡', early:'⏩', late:'⏪', miss:'❌' };
+  const flash = document.getElementById('ev-flash');
+  document.getElementById('ev-flash-icon').textContent = icons[result] || '🟡';
+  document.getElementById('ev-flash-txt').textContent =
+    score > 0 ? `${score} ĐIỂM` : '0 ĐIỂM';
+  document.getElementById('ev-flash-txt').style.color = color;
+  document.getElementById('ev-flash-sub').textContent = label;
+  flash.classList.add('show');
+
+  setTimeout(() => {
+    flash.classList.remove('show');
+    ES.idx++;
+    loadExamSit();
+  }, 1800);
+}
+
+function updateHudScore() {
+  const total = ES.pool.length * 5;
+  const pct = total > 0 ? Math.round(ES.totalScore / total * 100) : 0;
+  document.getElementById('hud-score').innerHTML =
+    `<span style="color:var(--cyan);font-weight:700;font-size:16px">${ES.totalScore}</span>`+
+    `<span style="color:var(--tx3);font-size:11px"> / ${total} điểm</span>`;
+}
+
+function endExam() {
+  const total = ES.pool.length;      // 10
+  const maxScore = total * 5;        // 50
+  const score = ES.totalScore;
+  const pct = Math.round(score / maxScore * 100);
+  const pass = score >= 35;          // ≥35/50 = đậu
+
+  document.getElementById('exam-screen').style.display = 'none';
+  document.getElementById('exam-result').style.display = 'flex';
+
+  document.getElementById('res-big').textContent = `${score}/${maxScore}`;
+  document.getElementById('res-big').className = 'result-big ' + (pass ? 'pass' : 'fail');
+  document.getElementById('res-verdict').textContent =
+    pass ? '✅ ĐẠT — Nhận diện tốt!' : '❌ CHƯA ĐẠT — Cần luyện thêm';
+  document.getElementById('res-sub').textContent =
+    `Cần ≥35/50 điểm để đậu · Bạn đạt ${score} điểm (${pct}%)`;
+
+  // Stat cards
+  document.getElementById('res-ok').textContent = score;
+  document.getElementById('res-bad').textContent = maxScore - score;
+  document.getElementById('res-pct').textContent = pct + '%';
+
+  // Chi tiết từng tình huống
+  const scoreColor = s => s >= 5?'#22d48a': s >= 3?'#f0a030': '#f04060';
+  const scoreBar = s => '█'.repeat(s) + '░'.repeat(5-s);
+  document.getElementById('res-list').innerHTML = ES.results.map((r,i) => `
+    <div class="rl-item">
+      <div class="rl-icon" style="font-size:13px;color:var(--tx3);font-family:var(--mono)">${i+1}</div>
+      <div class="rl-txt">
+        <strong style="color:var(--tx)">TH${r.s.id}</strong>
+        <span style="color:var(--tx3);font-size:11px"> · ${r.s.title}</span>
+        <div style="font-family:var(--mono);font-size:10px;color:${scoreColor(r.score)};margin-top:2px">
+          ${scoreBar(r.score)} ${r.label}
+        </div>
+      </div>
+      <div style="font-family:var(--mono);font-size:18px;font-weight:700;color:${scoreColor(r.score)}">${r.score}</div>
+    </div>`).join('');
+}
+
+function exitExam() {
+  document.getElementById('exam-screen').style.display = 'none';
+  document.getElementById('exam-result').style.display = 'none';
+  document.getElementById('exam-setup').style.display = 'flex';
+}
+
+// ═══════════════════════════════════════════════════════
+// KEYBOARD
+// ═══════════════════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space') {
+    e.preventDefault();
+    const activeTab = document.querySelector('.tab-panel.active');
+    if (activeTab.id === 'tab-practice') pressDanger();
+    else if (activeTab.id === 'tab-exam') examPressDanger();
+  }
+  if (e.code === 'ArrowRight') nextSit();
+  if (e.code === 'ArrowLeft') prevSit();
+});
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+let imgModalIdx = 0;
+
+function openImgModal(sitNum) {
+  imgModalIdx = sitNum - 1;
+  _showImgModal();
+  const m = document.getElementById('img-modal');
+  m.style.display = 'flex';
+}
+function _showImgModal() {
+  const s = SITUATIONS[imgModalIdx];
+  document.getElementById('img-modal-src').src = s.imgUrl;
+  document.getElementById('img-modal-label').textContent = `TH${s.id} — ${s.title}`;
+}
+function imgModalNav(dir) {
+  imgModalIdx = (imgModalIdx + dir + 120) % 120;
+  _showImgModal();
+}
+function closeImgModal() {
+  document.getElementById('img-modal').style.display = 'none';
+}
+document.addEventListener('keydown', e => {
+  if (document.getElementById('img-modal').style.display !== 'none') {
+    if (e.key === 'Escape') closeImgModal();
+    if (e.key === 'ArrowRight') imgModalNav(1);
+    if (e.key === 'ArrowLeft') imgModalNav(-1);
+  }
+});
+function toggleLearnSide() {
+  const side = document.getElementById('learn-side');
+  const bd   = document.getElementById('sidebar-backdrop');
+  const btn  = document.getElementById('menu-toggle-btn');
+  const isOpen = side.classList.toggle('open');
+  bd.classList.toggle('show', isOpen);
+  btn.textContent = isOpen ? '✕' : '☰';
+}
+
+function closeLearnSide() {
+  document.getElementById('learn-side').classList.remove('open');
+  document.getElementById('sidebar-backdrop').classList.remove('show');
+  document.getElementById('menu-toggle-btn').textContent = '☰';
+}
+
+initLearn();
+loadSit(0);
+loadSettings();
+</script>
+</body>
+</html>
