@@ -301,7 +301,7 @@ select.input{cursor:pointer}
 	<button class="menu-toggle" onclick="toggleSidebar()" id="menu-toggle-btn">☰</button>
     <div class="logo">⚡ GPLX 2025</div>
     <div class="topbar-sep"></div>
-    <div class="topbar-file" id="top-status"><span>Chưa tải dữ liệu</span></div>
+    <div class="topbar-file" id="top-status" style="display:none;"><span>Chưa tải dữ liệu</span></div>
     <div class="topbar-right">
       <button class="btn btn-ghost" onclick="document.getElementById('fi').click()" style="font-size:12px">📂 Tải file</button>
       <input type="file" id="fi" style="display:none" accept=".json,.xlsx,.xls" onchange="loadFile(this)">
