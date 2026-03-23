@@ -125,18 +125,7 @@ body{background:var(--bg);color:var(--tx);font-family:var(--f);font-size:14px;li
 /* Progress */
 .player-progress{position:absolute;bottom:0;left:0;right:0;height:4px;background:rgba(255,255,255,.15)}
 .player-prog-fill{height:100%;background:var(--blue);transition:width .1s linear;width:0}
-.player-prog-danger{position:absolute;top:0;height:100%;pointer-events:none;display:flex;overflow:hidden}
-/* Score zone color segments inside pv-zone */
-.pz-seg{height:100%;flex-shrink:0}
-.pz-5{background:rgba(34,212,138,.55)}
-.pz-4{background:rgba(100,200,100,.45)}
-.pz-3{background:rgba(240,180,48,.45)}
-.pz-2{background:rgba(240,120,48,.45)}
-.pz-1{background:rgba(240,64,96,.40)}
-/* Score zone legend */
-.pz-legend{display:flex;align-items:center;gap:6px;justify-content:center;flex-wrap:wrap}
-.pz-legend-item{display:flex;align-items:center;gap:3px;font-size:10px;font-weight:600;color:var(--tx3);font-family:var(--mono)}
-.pz-legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.player-prog-danger{position:absolute;top:0;height:100%;background:rgba(240,160,48,.5);pointer-events:none}
 
 /* Controls bar */
 .player-controls{padding:14px 16px;border-top:1px solid var(--bd);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
@@ -450,15 +439,8 @@ body{background:var(--bg);color:var(--tx);font-family:var(--f);font-size:14px;li
           <button class="ctrl-btn" onclick="pvReplay()">↺ Xem lại</button>
           <button class="ctrl-btn" onclick="pvSpeed()" id="pv-speed-btn">1×</button>
         </div>
-        <div class="pc-center" style="flex-direction:column;gap:4px">
+        <div class="pc-center">
           <div style="font-family:var(--mono);font-size:11px;color:var(--tx3)" id="pv-time">0.0 / 0.0s</div>
-          <div class="pz-legend">
-            <div class="pz-legend-item"><div class="pz-legend-dot" style="background:rgba(34,212,138,.7)"></div>5đ</div>
-            <div class="pz-legend-item"><div class="pz-legend-dot" style="background:rgba(100,200,100,.6)"></div>4đ</div>
-            <div class="pz-legend-item"><div class="pz-legend-dot" style="background:rgba(240,180,48,.6)"></div>3đ</div>
-            <div class="pz-legend-item"><div class="pz-legend-dot" style="background:rgba(240,120,48,.6)"></div>2đ</div>
-            <div class="pz-legend-item"><div class="pz-legend-dot" style="background:rgba(240,64,96,.55)"></div>1đ</div>
-          </div>
         </div>
         <div class="pc-right">
           <button class="ctrl-btn" onclick="prevSit()">← Trước</button>
@@ -1111,7 +1093,6 @@ function loadSit(idx) {
   document.getElementById('pv-speed-btn').textContent = '1×';
   document.getElementById('pv-prog').style.width = '0%';
   document.getElementById('pv-zone').style.cssText = '';
-  document.getElementById('pv-zone').innerHTML = '';
   document.getElementById('pv-hint').style.display = 'none';
   document.getElementById('pv-idle').style.display = 'flex';
   document.getElementById('pv-flash').classList.remove('show');
@@ -1160,36 +1141,9 @@ function onPvMeta() {
   pvDuration = v.duration;
   const s = SITUATIONS[currentSitIdx];
   const dangerT = pvDuration * s.dangerPct;
-  const w = s.window;
-
-  // Zone chỉ hiển thị từ dangerT đến +window (không hiện vùng bấm sớm)
-  const zoneLo = Math.max(0, dangerT / pvDuration * 100);
-  const zoneHi = Math.min(100, (dangerT + w) / pvDuration * 100);
-  const zoneEl = document.getElementById('pv-zone');
-  zoneEl.style.cssText = `left:${zoneLo}%;width:${zoneHi - zoneLo}%;`;
-
-  // Các mốc tính theo % window sau dangerT: 10/25/50/75/100
-  const cuts = [
-    { cls: 'pz-5', end: 0.10 },
-    { cls: 'pz-4', end: 0.25 },
-    { cls: 'pz-3', end: 0.50 },
-    { cls: 'pz-2', end: 0.75 },
-    { cls: 'pz-1', end: 1.00 },
-  ];
-  // Xóa segments cũ
-  zoneEl.innerHTML = '';
-  let prev = 0;
-  cuts.forEach(c => {
-    const pct = (c.end - prev) * 100;
-    if (pct > 0) {
-      const seg = document.createElement('div');
-      seg.className = 'pz-seg ' + c.cls;
-      seg.style.width = pct + '%';
-      zoneEl.appendChild(seg);
-    }
-    prev = c.end;
-  });
-
+  const zoneLo = Math.max(0, (dangerT - s.window) / pvDuration * 100);
+  const zoneHi = Math.min(100, (dangerT + s.window) / pvDuration * 100);
+  document.getElementById('pv-zone').style.cssText = `left:${zoneLo}%;width:${zoneHi-zoneLo}%;`;
   document.getElementById('pv-time').textContent = `0.0 / ${pvDuration.toFixed(1)}s`;
 }
 
@@ -1483,11 +1437,12 @@ function examPlay(s) {
 function calcScore(diff, window) {
   // Bấm quá sớm (> 1s trước nguy hiểm) = 0đ
   if (diff < -1.0) return 0;
-  // Chia đều % window: 10/25/50/75/100
-  if (diff <= window * 0.10) return 5;
-  if (diff <= window * 0.25) return 4;
-  if (diff <= window * 0.50) return 3;
-  if (diff <= window * 0.75) return 2;
+  // Bấm trong vùng tối ưu [-1s, 20% window] = 5đ
+  console.log(diff)
+  if (diff <= window * 0.05) return 5;
+  if (diff <= window * 0.1) return 4;
+  if (diff <= window * 0.20) return 3;
+  if (diff <= window * 0.30) return 2;
   if (diff <= window)        return 1;
   // Quá muộn = 0đ
   return 0;
